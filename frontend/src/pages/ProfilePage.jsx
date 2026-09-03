@@ -36,4 +36,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;                           // ← MUST export ProfilePage
+export default ProfilePage;    
