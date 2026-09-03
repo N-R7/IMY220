@@ -6,32 +6,29 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);  // ← NEW
 
   const validate = () => {
     const newErrors = {};
 
-    // Username validation (min 3 characters)
     if (!username) {
       newErrors.username = 'Username is required';
     } else if (username.length < 3) {
       newErrors.username = 'Username must be at least 3 characters';
     }
 
-    // Email validation
     if (!email) {
       newErrors.email = 'Email is required';
     } else if (!email.includes('@')) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation (min 6 characters)
     if (!password) {
       newErrors.password = 'Password is required';
     } else if (password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    // Confirm password validation (must match)
     if (!confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (password !== confirmPassword) {
@@ -41,7 +38,7 @@ const SignupForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {  
     e.preventDefault();
     const validationErrors = validate();
     
@@ -50,10 +47,35 @@ const SignupForm = () => {
       return;
     }
 
-    // If valid, submit
-    console.log('Signup submitted:', { username, email, password, confirmPassword });
-    setErrors({});
-    alert('Sign up successful!');
+    setLoading(true); 
+    
+    try {  
+      // BACKEND CONNECTION
+      const response = await fetch('http://localhost:3000/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, email, password, confirmPassword }),
+      });
+
+      const data = await response.json();
+      console.log('Server response:', data);
+      
+      if (data.success) {
+        alert(data.message);
+        setErrors({});
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to connect to server');
+    } finally {
+      setLoading(false);  
+    }
   };
 
   return (
@@ -104,7 +126,9 @@ const SignupForm = () => {
         {errors.confirmPassword && <span style={{ color: 'red' }}>{errors.confirmPassword}</span>}
       </div>
       
-      <button type="submit">Sign Up</button>
+      <button type="submit" disabled={loading}>  {}
+        {loading ? 'Signing up...' : 'Sign Up'}
+      </button>
     </form>
   );
 };

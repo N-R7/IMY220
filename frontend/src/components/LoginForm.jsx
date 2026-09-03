@@ -4,18 +4,17 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);  // ← NEW
 
   const validate = () => {
     const newErrors = {};
 
-    // Email validation
     if (!email) {
       newErrors.email = 'Email is required';
     } else if (!email.includes('@')) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Password validation
     if (!password) {
       newErrors.password = 'Password is required';
     }
@@ -23,7 +22,7 @@ const LoginForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {  
     e.preventDefault();
     const validationErrors = validate();
     
@@ -32,10 +31,33 @@ const LoginForm = () => {
       return;
     }
 
-    // If valid, submit
-    console.log('Login submitted:', { email, password });
-    setErrors({});
-    alert('Login successful!');
+    setLoading(true); 
+    
+    try {  
+      // BACKEND CONNECTION
+      const response = await fetch('http://localhost:3000/api/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      console.log('Server response:', data);
+      
+      if (data.success) {
+        alert(data.message);
+        setErrors({});
+        setEmail('');
+        setPassword('');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to connect to server');
+    } finally {
+      setLoading(false); 
+    }
   };
 
   return (
@@ -64,7 +86,9 @@ const LoginForm = () => {
         {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
       </div>
       
-      <button type="submit">Login</button>
+      <button type="submit" disabled={loading}>  {}
+        {loading ? 'Logging in...' : 'Login'}
+      </button>
     </form>
   );
 };
