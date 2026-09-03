@@ -1,21 +1,22 @@
 FROM node:20-alpine
 
+# Working directory
 WORKDIR /app
 
-# Copy package files first (for better caching)
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the rest of the application
+# Copy all files
 COPY . .
 
 # Build the app
 RUN npm run build
 
-# Expose port 5173
+# Expose port
 EXPOSE 5173
 
-# Start the app
+# Start the server
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

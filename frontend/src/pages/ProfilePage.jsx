@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import Profile from '../components/Profile';
 import EditProfile from '../components/EditProfile';
-import FriendsList from '../components/FriendsList';
+import FriendsList from '../components/FriendList';
 import CreatePost from '../components/CreatePost';
 import PostPreview from '../components/PostPreview';
 import { dummyUser, dummyPosts } from '../dummyData';
