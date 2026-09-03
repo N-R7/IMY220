@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom';
-
-const PostPreview = ({ post }) => {
+const Post = ({ post }) => {
   return (
-    <article style={styles.card}>
+    <article>
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
         <span style={styles.username}>{post.username}</span>
@@ -11,17 +9,14 @@ const PostPreview = ({ post }) => {
         </span>
       </div>
       
-      <Link to={`/post/${post.id}`}>
-        <div style={styles.imagePlaceholder}>
-          IMAGE HERE
-        </div>
-      </Link>
+      <div style={styles.imagePlaceholder}>
+        IMAGE HERE
+      </div>
       
       <div style={styles.content}>
         <p style={styles.caption}>{post.caption}</p>
         <div style={styles.stats}>
           <span>{post.likes} likes</span>
-          <span>{post.comments.length} comments</span>
         </div>
       </div>
     </article>
@@ -29,11 +24,6 @@ const PostPreview = ({ post }) => {
 };
 
 const styles = {
-  card: {
-    border: '1px solid #ccc',
-    marginBottom: '20px',
-    backgroundColor: 'white'
-  },
   header: {
     display: 'flex',
     alignItems: 'center',
@@ -83,4 +73,4 @@ const styles = {
   }
 };
 
-export default PostPreview;
+export default Post;

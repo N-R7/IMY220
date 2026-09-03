@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import SplashPage from './pages/SplashPage';
 import HomePage from './pages/HomePage';
-import ProfilePage from './pages/ProfilePage';
+import ProfilePage from './pages/ProfilePage';    // ← Import ProfilePage
 import PostPage from './pages/PostPage';
 
 function App() {
