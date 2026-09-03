@@ -1,4 +1,3 @@
-// frontend/src/components/Profile.jsx
 const Profile = ({ user }) => {
   return (
     <div style={styles.profile}>

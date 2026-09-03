@@ -1,4 +1,3 @@
-// frontend/src/dummyData.js
 export const dummyPosts = [
   {
     id: 1,

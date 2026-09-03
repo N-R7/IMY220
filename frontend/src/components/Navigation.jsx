@@ -1,4 +1,3 @@
-// frontend/src/components/Navigation.jsx
 import { Link } from 'react-router-dom';
 
 const Navigation = () => {

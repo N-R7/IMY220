@@ -1,4 +1,3 @@
-// frontend/src/components/PostImage.jsx
 const PostImage = ({ src, alt }) => {
   return (
     <div style={styles.imagePlaceholder}>
