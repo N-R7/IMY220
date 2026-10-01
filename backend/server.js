@@ -149,6 +149,34 @@ app.post('/api/posts', async (req, res) => {
     }
 });
 
+app.put('/api/posts/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                { _id: new ObjectId(req.params.id) },
+                {
+                    $set: {
+                        caption: req.body.caption
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 app.delete('/api/posts/:id', async (req, res) => {
     try {
         const db = getDB();

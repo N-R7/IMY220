@@ -38,7 +38,7 @@ const PostPage = () => {
       <main>
         <Post post={post} />
         <Comments comments={post.comments} />
-        <EditPost />
+        <EditPost post={post} />
       </main>
     </div>
   );
