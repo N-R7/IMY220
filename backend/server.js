@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors'); 
+const { connectDB, getDB } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,6 +43,61 @@ app.post('/api/signin', (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.get('/api/users', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const users = await db
+            .collection('users')
+            .find({})
+            .toArray();
+
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
 });
+
+app.get('/api/posts', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const posts = await db
+            .collection('posts')
+            .find({})
+            .toArray();
+
+        res.json(posts);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/albums', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const albums = await db
+            .collection('albums')
+            .find({})
+            .toArray();
+
+        res.json(albums);
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to connect to MongoDB:", err);
+  });
