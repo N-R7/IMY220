@@ -1,6 +1,22 @@
 import { Link } from 'react-router-dom';
 
 const PostPreview = ({ post }) => {
+  const handleDelete = async (id) => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/posts/${id}`,
+              {
+                  method: 'DELETE'
+              }
+          );
+
+          window.location.reload();
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <article style={styles.card}>
       <div style={styles.header}>
@@ -25,6 +41,9 @@ const PostPreview = ({ post }) => {
           <span>{post.likes} likes</span>
           <span>{post.comments?.length || 0} comments</span>
         </div>
+        <button onClick={() => handleDelete(post._id)}>
+          Delete
+        </button>
       </div>
     </article>
   );

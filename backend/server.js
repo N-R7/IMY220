@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors'); 
 const { connectDB, getDB } = require('./db');
+const { ObjectId } = require('mongodb');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -143,6 +144,29 @@ app.post('/api/posts', async (req, res) => {
 
     } catch (err) {
         res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+app.delete('/api/posts/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .deleteOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        res.status(200).json({
+            success: true,
+            deletedCount: result.deletedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
             error: err.message
         });
     }
