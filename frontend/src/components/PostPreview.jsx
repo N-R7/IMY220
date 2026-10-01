@@ -11,7 +11,7 @@ const PostPreview = ({ post }) => {
         </span>
       </div>
       
-      <Link to={`/post/${post.id}`}>
+      <Link to={`/post/${post._id}`}>
         <div style={styles.imagePlaceholder}>
           IMAGE HERE
         </div>
@@ -21,7 +21,7 @@ const PostPreview = ({ post }) => {
         <p style={styles.caption}>{post.caption}</p>
         <div style={styles.stats}>
           <span>{post.likes} likes</span>
-          <span>{post.comments.length} comments</span>
+          <span>{post.comments?.length || 0} comments</span>
         </div>
       </div>
     </article>
