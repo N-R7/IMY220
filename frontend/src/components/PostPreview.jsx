@@ -7,7 +7,9 @@ const PostPreview = ({ post }) => {
         <div style={styles.avatarPlaceholder}>👤</div>
         <span style={styles.username}>{post.username}</span>
         <span style={styles.timestamp}>
-          {new Date(post.timestamp).toLocaleDateString()}
+          {post.timestamp
+          ? new Date(post.timestamp).toLocaleDateString()
+          : ""}
         </span>
       </div>
       

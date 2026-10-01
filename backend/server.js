@@ -9,38 +9,75 @@ app.use(cors());
 
 app.use(express.json());
 
-// Stubbed Sign Up endpoint
-app.post('/api/signup', (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
-  
-  console.log('Signup attempt:', { username, email, password, confirmPassword });
-  
-  res.status(201).json({
-    success: true,
-    message: 'User registered successfully!',
-    user: {
-      id: 1,
-      username: username,
-      email: email
-    }
-  });
+app.post('/api/signup', async (req, res) => {
+  try {
+    const db = getDB();
+
+    const {
+      username,
+      email,
+      password
+    } = req.body;
+
+    const newUser = {
+      username,
+      email,
+      password,
+      bio: "",
+      friends: []
+    };
+
+    const result = await db
+      .collection('users')
+      .insertOne(newUser);
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully!',
+      userId: result.insertedId
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
 });
 
-// Stubbed Sign In endpoint
-app.post('/api/signin', (req, res) => {
-  const { email, password } = req.body;
-  
-  console.log('Login attempt:', { email, password });
-  
-  res.status(200).json({
-    success: true,
-    message: 'Login successful!',
-    user: {
-      id: 1,
-      email: email,
-      username: 'sun_purple'
+app.post('/api/signin', async (req, res) => {
+  try {
+    const db = getDB();
+
+    const { email, password } = req.body;
+
+    const user = await db
+      .collection('users')
+      .findOne({ email, password });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
     }
-  });
+
+    res.status(200).json({
+      success: true,
+      message: 'Login successful!',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email
+      }
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
 });
 
 app.get('/api/users', async (req, res) => {
@@ -89,6 +126,25 @@ app.get('/api/albums', async (req, res) => {
     }
     catch (err) {
         res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/posts', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const newPost = req.body;
+
+        const result = await db
+            .collection('posts')
+            .insertOne(newPost);
+
+        res.status(201).json(result);
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
     }
 });
 
