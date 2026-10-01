@@ -98,6 +98,37 @@ app.get('/api/users', async (req, res) => {
     }
 });
 
+app.put('/api/users/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        username: req.body.username,
+                        bio: req.body.bio
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 app.get('/api/posts', async (req, res) => {
     try {
         const db = getDB();
@@ -195,6 +226,23 @@ app.delete('/api/posts/:id', async (req, res) => {
     } catch (err) {
         res.status(500).json({
             success: false,
+            error: err.message
+        });
+    }
+});
+
+app.post('/api/albums', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .insertOne(req.body);
+
+        res.status(201).json(result);
+
+    } catch (err) {
+        res.status(500).json({
             error: err.message
         });
     }

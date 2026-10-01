@@ -47,7 +47,7 @@ const ProfilePage = () => {
       <main>
         <section>
           <Profile user={user} />
-          <EditProfile />
+          <EditProfile user={user} />
         </section>
         
         <section>

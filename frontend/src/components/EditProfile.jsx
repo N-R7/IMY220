@@ -1,18 +1,67 @@
-const EditProfile = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Profile updated');
-  };
+import { useState, useEffect } from 'react';
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h4>Edit Profile</h4>
-      <input type="text" placeholder="Username" />
-      <input type="text" placeholder="Full Name" />
-      <textarea placeholder="Bio"></textarea>
-      <button type="submit">Save Changes</button>
-    </form>
-  );
+
+const EditProfile = ({ user }) => {
+    const [username, setUsername] = useState('');
+    const [bio, setBio] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            setUsername(user.username || '');
+            setBio(user.bio || '');
+        }
+    }, [user]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/users/${user._id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username,
+                        bio
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Profile updated successfully!');
+                window.location.reload();
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <h4>Edit Profile</h4>
+
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
+
+            <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+            />
+
+            <button type="submit">
+                Save Changes
+            </button>
+        </form>
+    );
 };
 
 export default EditProfile;
