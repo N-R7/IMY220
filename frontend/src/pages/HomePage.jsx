@@ -7,13 +7,22 @@ import { useEffect, useState } from 'react';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
+  const [feedType, setFeedType] = useState('global');
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/posts')
-        .then(response => response.json())
-        .then(data => setPosts(data))
-        .catch(error => console.error(error));
-}, []);
+      fetch('http://localhost:3000/api/posts')
+          .then(response => response.json())
+          .then(data => setPosts(data))
+          .catch(error => console.error(error));
+  }, []);
+
+  const displayedPosts =
+  feedType === 'global'
+  ? posts
+  : posts.filter(
+  post => post.username === 'nina'
+  );
+
   return (
     <div>
       <Navigation />
@@ -24,7 +33,14 @@ const HomePage = () => {
         <section>
           <SearchInput />
           <CreatePost />
-          <Feed posts={posts} />
+          <button onClick={() => setFeedType('global')}>
+              Global Feed
+          </button>
+
+          <button onClick={() => setFeedType('local')}>
+              Local Feed
+          </button>
+          <Feed posts={displayedPosts} />
         </section>
       </main>
     </div>

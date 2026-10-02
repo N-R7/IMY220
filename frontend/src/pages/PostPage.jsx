@@ -37,7 +37,8 @@ const PostPage = () => {
       <Navigation />
       <main>
         <Post post={post} />
-        <Comments comments={post.comments} />
+        <Comments comments={post.comments} 
+          postId={post._id}/>
         <EditPost post={post} />
       </main>
     </div>

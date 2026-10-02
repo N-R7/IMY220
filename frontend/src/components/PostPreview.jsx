@@ -17,6 +17,28 @@ const PostPreview = ({ post }) => {
       }
   };
 
+  const handleReport = async (id) => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/posts/${id}/report`,
+              {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      reason: 'Inappropriate content'
+                  })
+              }
+          );
+
+          alert('Post reported!');
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <article style={styles.card}>
       <div style={styles.header}>
@@ -43,6 +65,9 @@ const PostPreview = ({ post }) => {
         </div>
         <button onClick={() => handleDelete(post._id)}>
           Delete
+        </button>
+        <button onClick={() => handleReport(post._id)}>
+            Report
         </button>
       </div>
     </article>

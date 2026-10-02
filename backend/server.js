@@ -248,6 +248,58 @@ app.post('/api/albums', async (req, res) => {
     }
 });
 
+app.delete('/api/albums/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .deleteOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        res.json({
+            success: true,
+            deletedCount: result.deletedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/albums/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        name: req.body.name,
+                        description: req.body.description
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
 app.put('/api/users/:id/friend', async (req, res) => {
     try {
         const db = getDB();
@@ -259,7 +311,7 @@ app.put('/api/users/:id/friend', async (req, res) => {
                     _id: new ObjectId(req.params.id)
                 },
                 {
-                    $push: {
+                    $addToSet: {
                         friends: req.body.friend
                     }
                 }
@@ -291,6 +343,67 @@ app.put('/api/users/:id/unfriend', async (req, res) => {
                 {
                     $pull: {
                         friends: req.body.friend
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/posts/:id/comment', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $push: {
+                        comments: req.body.comment
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/posts/:id/report', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        reported: true,
+                        reportReason: req.body.reason
                     }
                 }
             );

@@ -5,6 +5,8 @@ import EditProfile from '../components/EditProfile';
 import FriendsList from '../components/FriendList';
 import CreatePost from '../components/CreatePost';
 import PostPreview from '../components/PostPreview';
+import CreateAlbum from '../components/CreateAlbum';
+import AlbumPreview from '../components/AlbumPreview';
 
 import { useState, useEffect } from 'react';
 
@@ -12,6 +14,7 @@ const ProfilePage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [albums, setAlbums] = useState([]);
 
   useEffect(() => {
       fetch('http://localhost:3000/api/users')
@@ -27,6 +30,13 @@ const ProfilePage = () => {
             setPosts(data);
         })
         .catch(error => console.error(error));
+
+        fetch('http://localhost:3000/api/albums')
+          .then(response => response.json())
+          .then(data => {
+              setAlbums(data);
+          })
+          .catch(error => console.error(error));
 
   }, [id]);
 
@@ -113,6 +123,18 @@ const ProfilePage = () => {
               <PostPreview key={post._id} post={post} />
           ))}
         </section>
+
+        <section>
+          <h3>Albums</h3>
+          <CreateAlbum />
+          {albums.map(album => (
+              <AlbumPreview
+                  key={album._id}
+                  album={album}
+              />
+          ))}
+        </section>
+
       </main>
     </div>
   );
