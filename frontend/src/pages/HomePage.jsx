@@ -16,12 +16,16 @@ const HomePage = () => {
           .catch(error => console.error(error));
   }, []);
 
-  const displayedPosts =
-  feedType === 'global'
-  ? posts
-  : posts.filter(
-  post => post.username === 'nina'
+  const currentUser = JSON.parse(
+    localStorage.getItem('currentUser')
   );
+
+  const displayedPosts =
+      feedType === 'global'
+          ? posts
+          : posts.filter(
+                post => post.username === currentUser?.username
+            );
 
   return (
     <div>

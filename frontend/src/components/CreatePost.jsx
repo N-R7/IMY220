@@ -7,13 +7,18 @@ const CreatePost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const currentUser =
+    JSON.parse(
+        localStorage.getItem('currentUser')
+    );
+
     const newPost = {
-      username: "nina",
-      image: image ? image.name : "placeholder.jpg",
-      caption,
-      hashtags: [],
-      likes: 0,
-      comments: []
+        username: currentUser?.username,
+        image: image ? image.name : 'placeholder.jpg',
+        caption,
+        hashtags: [],
+        likes: 0,
+        comments: []
     };
 
     try {
