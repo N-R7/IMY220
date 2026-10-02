@@ -41,6 +41,52 @@ const ProfilePage = () => {
       );
   }
 
+  const handleAddFriend = async () => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/users/${user._id}/friend`,
+              {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      friend: 'bob'
+                  })
+              }
+          );
+
+          alert('Friend added!');
+          window.location.reload();
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
+  const handleUnfriend = async () => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/users/${user._id}/unfriend`,
+              {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      friend: 'bob'
+                  })
+              }
+          );
+
+          alert('Friend removed!');
+          window.location.reload();
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <div>
       <Navigation />
@@ -53,6 +99,12 @@ const ProfilePage = () => {
         <section>
           <FriendsList friends={user?.friends || []} />
         </section>
+        <button onClick={handleAddFriend}>
+          Add Friend
+        </button>
+        <button onClick={handleUnfriend}>
+            Unfriend
+        </button>
         
         <section>
           <h3>My Posts</h3>

@@ -248,6 +248,66 @@ app.post('/api/albums', async (req, res) => {
     }
 });
 
+app.put('/api/users/:id/friend', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $push: {
+                        friends: req.body.friend
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/users/:id/unfriend', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $pull: {
+                        friends: req.body.friend
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
