@@ -6,7 +6,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);  // ← NEW
+  const [loading, setLoading] = useState(false);  
 
   const validate = () => {
     const newErrors = {};

@@ -3,17 +3,31 @@ import Navigation from '../components/Navigation';
 import Post from '../components/Post';
 import Comments from '../components/Comments';
 import EditPost from '../components/EditPost';
-import { dummyPosts, dummyComments } from '../dummyData';
+
+import { useState, useEffect } from 'react';
 
 const PostPage = () => {
   const { id } = useParams();
-  const post = dummyPosts.find(p => p.id === parseInt(id));
+  const [post, setPost] = useState(null);
 
-  if (!post) {
+  useEffect(() => {
+      fetch('http://localhost:3000/api/posts')
+          .then(response => response.json())
+          .then(data => {
+              const foundPost = data.find(
+                  p => p._id === id
+              );
+
+              setPost(foundPost);
+          })
+          .catch(error => console.error(error));
+  }, [id]);
+
+  if (post === null) {
     return (
       <div>
         <Navigation />
-        <main><h2>Post not found</h2></main>
+        <main><h2>Loading...</h2></main>
       </div>
     );
   }
@@ -23,8 +37,9 @@ const PostPage = () => {
       <Navigation />
       <main>
         <Post post={post} />
-        <Comments comments={dummyComments} />
-        <EditPost />
+        <Comments comments={post.comments} 
+          postId={post._id}/>
+        <EditPost post={post} />
       </main>
     </div>
   );

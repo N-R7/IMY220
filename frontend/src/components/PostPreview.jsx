@@ -1,17 +1,57 @@
 import { Link } from 'react-router-dom';
 
 const PostPreview = ({ post }) => {
+  const handleDelete = async (id) => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/posts/${id}`,
+              {
+                  method: 'DELETE'
+              }
+          );
+
+          window.location.reload();
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
+  const handleReport = async (id) => {
+      try {
+          await fetch(
+              `http://localhost:3000/api/posts/${id}/report`,
+              {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      reason: 'Inappropriate content'
+                  })
+              }
+          );
+
+          alert('Post reported!');
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <article style={styles.card}>
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
         <span style={styles.username}>{post.username}</span>
         <span style={styles.timestamp}>
-          {new Date(post.timestamp).toLocaleDateString()}
+          {post.timestamp
+          ? new Date(post.timestamp).toLocaleDateString()
+          : ""}
         </span>
       </div>
       
-      <Link to={`/post/${post.id}`}>
+      <Link to={`/post/${post._id}`}>
         <div style={styles.imagePlaceholder}>
           IMAGE HERE
         </div>
@@ -21,8 +61,14 @@ const PostPreview = ({ post }) => {
         <p style={styles.caption}>{post.caption}</p>
         <div style={styles.stats}>
           <span>{post.likes} likes</span>
-          <span>{post.comments.length} comments</span>
+          <span>{post.comments?.length || 0} comments</span>
         </div>
+        <button onClick={() => handleDelete(post._id)}>
+          Delete
+        </button>
+        <button onClick={() => handleReport(post._id)}>
+            Report
+        </button>
       </div>
     </article>
   );

@@ -9,7 +9,9 @@ const Navigation = () => {
       <div style={styles.navLinks}>
         <Link to="/home" style={styles.link}>Home</Link>
         <Link to="/profile/1" style={styles.link}>Profile</Link>
-        <button style={styles.logoutBtn} onClick={() => console.log('Logout clicked')}>
+        <button
+          style={styles.logoutBtn}
+          onClick={() => { window.location.href = '/'; }}>
           Logout
         </button>
       </div>
