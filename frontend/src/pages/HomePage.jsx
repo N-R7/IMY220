@@ -27,7 +27,7 @@ const HomePage = () => {
           || post.username === currentUser?.username
       )
       .filter(post =>
-          post.caption
+          (post.caption || '')
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
       );
@@ -44,7 +44,10 @@ const HomePage = () => {
               searchTerm={searchTerm}
               setSearchTerm={setSearchTerm}
           />
-          <CreatePost />
+          <CreatePost
+              posts={posts}
+              setPosts={setPosts}
+          />
           <button onClick={() => setFeedType('global')}>
               Global Feed
           </button>
@@ -52,7 +55,10 @@ const HomePage = () => {
           <button onClick={() => setFeedType('local')}>
               Local Feed
           </button>
-          <Feed posts={displayedPosts} />
+          <Feed
+              posts={displayedPosts}
+              setPosts={setPosts}
+          />
         </section>
       </main>
     </div>

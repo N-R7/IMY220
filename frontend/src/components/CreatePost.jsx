@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const CreatePost = () => {
+const CreatePost = ({ posts, setPosts }) => {
   const [caption, setCaption] = useState('');
   const [image, setImage] = useState(null);
 
@@ -36,6 +36,14 @@ const CreatePost = () => {
       const data = await response.json();
 
       console.log("Post created:", data);
+
+      setPosts([
+          ...posts,
+          {
+              ...newPost,
+              _id: data.insertedId
+          }
+      ]);
 
       setCaption("");
       setImage(null);

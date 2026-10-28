@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 
-const PostPreview = ({ post }) => {
+const PostPreview = ({post, posts, setPosts}) => {
   const handleDelete = async (id) => {
       try {
           await fetch(
@@ -11,7 +11,7 @@ const PostPreview = ({ post }) => {
               }
           );
 
-          window.location.reload();
+          setPosts( posts.filter( p => p._id !== id));
 
       } catch (error) {
           console.error(error);
@@ -19,6 +19,7 @@ const PostPreview = ({ post }) => {
   };
 
   const [reportReason, setReportReason] = useState('');
+  const [reported, setReported] = useState(post.reported || false);
 
   const handleReport = async (id) => {
       try {
@@ -36,6 +37,7 @@ const PostPreview = ({ post }) => {
           );
 
           alert('Post reported!');
+          setReported(true);
 
       } catch (error) {
           console.error(error);
@@ -93,8 +95,10 @@ const PostPreview = ({ post }) => {
               Other
           </option>
       </select>
-        <button onClick={() => handleReport(post._id)}>
-            Report
+        <button disabled={reported}
+                onClick={() => handleReport(post._id)} 
+        >
+            {reported ? 'Reported' : 'Report'}
         </button>
       </div>
     </article>
