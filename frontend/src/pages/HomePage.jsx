@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [feedType, setFeedType] = useState('global');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
       fetch('http://localhost:3000/api/posts')
@@ -16,12 +17,20 @@ const HomePage = () => {
           .catch(error => console.error(error));
   }, []);
 
-  const displayedPosts =
-  feedType === 'global'
-  ? posts
-  : posts.filter(
-  post => post.username === 'nina'
+  const currentUser = JSON.parse(
+      localStorage.getItem('currentUser')
   );
+
+  const displayedPosts = posts
+      .filter(post =>
+          feedType === 'global'
+          || post.username === currentUser?.username
+      )
+      .filter(post =>
+          post.caption
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+      );
 
   return (
     <div>
@@ -31,7 +40,10 @@ const HomePage = () => {
           <h3>Welcome!</h3>
         </aside>
         <section>
-          <SearchInput />
+          <SearchInput
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+          />
           <CreatePost />
           <button onClick={() => setFeedType('global')}>
               Global Feed

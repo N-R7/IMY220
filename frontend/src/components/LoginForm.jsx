@@ -47,10 +47,19 @@ const LoginForm = () => {
       console.log('Server response:', data);
       
       if (data.success) {
-        alert(data.message);
-        setErrors({});
-        setEmail('');
-        setPassword('');
+
+          localStorage.setItem(
+              'currentUser',
+              JSON.stringify(data.user)
+          );
+
+          alert(data.message);
+
+          setErrors({});
+          setEmail('');
+          setPassword('');
+
+          window.location.href = '/home';
       }
     } catch (error) {
       console.error('Error:', error);

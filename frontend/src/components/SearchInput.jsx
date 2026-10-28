@@ -1,15 +1,18 @@
-const SearchInput = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Search submitted');
-  };
+const SearchInput = ({
+    searchTerm,
+    setSearchTerm
+}) => {
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" placeholder="Search..." />
-      <button type="submit">Search</button>
-    </form>
-  );
+    return (
+        <input
+            type="text"
+            placeholder="Search posts..."
+            value={searchTerm}
+            onChange={(e) =>
+                setSearchTerm(e.target.value)
+            }
+        />
+    );
 };
 
 export default SearchInput;
