@@ -20,7 +20,11 @@ const ProfilePage = () => {
       fetch('http://localhost:3000/api/users')
           .then(response => response.json())
           .then(data => {
-              setUser(data[0]);
+              const foundUser = data.find(
+                  user => user._id === id
+              );
+
+              setUser(foundUser);
           })
           .catch(error => console.error(error));
 

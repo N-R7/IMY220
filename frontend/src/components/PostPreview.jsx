@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const PostPreview = ({ post }) => {
   const handleDelete = async (id) => {
@@ -17,6 +18,8 @@ const PostPreview = ({ post }) => {
       }
   };
 
+  const [reportReason, setReportReason] = useState('');
+
   const handleReport = async (id) => {
       try {
           await fetch(
@@ -27,7 +30,7 @@ const PostPreview = ({ post }) => {
                       'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                      reason: 'Inappropriate content'
+                      reason: reportReason
                   })
               }
           );
@@ -66,6 +69,30 @@ const PostPreview = ({ post }) => {
         <button onClick={() => handleDelete(post._id)}>
           Delete
         </button>
+        <select
+          value={reportReason}
+          onChange={(e) => setReportReason(e.target.value)}
+      >
+          <option value="">
+              Select reason
+          </option>
+
+          <option value="Spam">
+              Spam
+          </option>
+
+          <option value="Inappropriate Content">
+              Inappropriate Content
+          </option>
+
+          <option value="Harassment">
+              Harassment
+          </option>
+
+          <option value="Other">
+              Other
+          </option>
+      </select>
         <button onClick={() => handleReport(post._id)}>
             Report
         </button>

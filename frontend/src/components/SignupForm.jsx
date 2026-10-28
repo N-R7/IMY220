@@ -63,13 +63,26 @@ const SignupForm = () => {
       console.log('Server response:', data);
       
       if (data.success) {
-        alert(data.message);
-        setErrors({});
-        setUsername('');
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
+
+          localStorage.setItem(
+              'currentUser',
+              JSON.stringify({
+                  username,
+                  email
+              })
+          );
+
+          alert(data.message);
+
+          setErrors({});
+          setUsername('');
+          setEmail('');
+          setPassword('');
+          setConfirmPassword('');
+
+          window.location.href = '/home';
       }
+      
     } catch (error) {
       console.error('Error:', error);
       alert('Failed to connect to server');

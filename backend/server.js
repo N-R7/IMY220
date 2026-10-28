@@ -129,6 +129,29 @@ app.put('/api/users/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/users/:id', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .deleteOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        res.json({
+            success: true,
+            deletedCount: result.deletedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 app.get('/api/posts', async (req, res) => {
     try {
         const db = getDB();

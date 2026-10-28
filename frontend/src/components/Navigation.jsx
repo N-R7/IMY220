@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 
 const Navigation = () => {
+  const currentUser = JSON.parse(
+      localStorage.getItem('currentUser')
+  );
   return (
     <nav style={styles.nav}>
       <div style={styles.logo}>
@@ -8,7 +11,12 @@ const Navigation = () => {
       </div>
       <div style={styles.navLinks}>
         <Link to="/home" style={styles.link}>Home</Link>
-        <Link to="/profile/1" style={styles.link}>Profile</Link>
+        <Link
+            to={`/profile/${currentUser?.id}`}
+            style={styles.link}
+        >
+            Profile
+        </Link>
         <button
           style={styles.logoutBtn}
           onClick={() => { window.location.href = '/'; }}>

@@ -42,6 +42,23 @@ const EditProfile = ({ user }) => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await fetch(
+                `http://localhost:3000/api/users/${user._id}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            alert('Profile deleted!');
+            window.location.href = '/';
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <h4>Edit Profile</h4>
@@ -59,6 +76,10 @@ const EditProfile = ({ user }) => {
 
             <button type="submit">
                 Save Changes
+            </button>
+            <button type="button"
+              onClick={handleDelete}>
+                Delete Profile
             </button>
         </form>
     );
