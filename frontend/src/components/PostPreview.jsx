@@ -64,6 +64,13 @@ const PostPreview = ({post, posts, setPosts}) => {
       
       <div style={styles.content}>
         <p style={styles.caption}>{post.caption}</p>
+        <p>
+            {post.hashtags?.map(tag => (
+                <span key={tag}>
+                    #{tag}{' '}
+                </span>
+            ))}
+        </p>
         <div style={styles.stats}>
           <span>{post.likes} likes</span>
           <span>{post.comments?.length || 0} comments</span>

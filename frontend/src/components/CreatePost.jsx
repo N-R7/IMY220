@@ -3,6 +3,7 @@ import { useState } from 'react';
 const CreatePost = ({ posts, setPosts }) => {
   const [caption, setCaption] = useState('');
   const [image, setImage] = useState(null);
+  const [hashtags, setHashtags] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,7 +17,10 @@ const CreatePost = ({ posts, setPosts }) => {
         username: currentUser?.username,
         image: image ? image.name : 'placeholder.jpg',
         caption,
-        hashtags: [],
+        hashtags: hashtags
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag !== ''),
         likes: 0,
         comments: []
     };
@@ -47,6 +51,7 @@ const CreatePost = ({ posts, setPosts }) => {
 
       setCaption("");
       setImage(null);
+      setHashtags("");
 
     } catch (error) {
       console.error(error);
@@ -72,6 +77,16 @@ const CreatePost = ({ posts, setPosts }) => {
           placeholder="What's on your mind?"
           rows="3"
         />
+      </div>
+      <div>
+          <label>Hashtags:</label>
+
+          <input
+              type="text"
+              value={hashtags}
+              onChange={(e) => setHashtags(e.target.value)}
+              placeholder="travel, beach, photography"
+          />
       </div>
       <button type="submit">Share Post</button>
     </form>

@@ -30,6 +30,19 @@ const HomePage = () => {
           (post.caption || '')
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
+
+          ||
+
+          (post.username || '')
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
+
+          ||
+          
+          (post.hashtags || [])
+              .join(' ')
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase())
       );
 
   return (
