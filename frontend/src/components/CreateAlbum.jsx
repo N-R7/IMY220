@@ -12,7 +12,9 @@ const CreateAlbum = () => {
             name,
             description,
             hashtags: hashtags.split(',').map(tag => tag.trim()),
-            owner: 'nina'
+            owner: JSON.parse(
+                localStorage.getItem('currentUser')
+            )?.username
         };
 
         try {
@@ -41,12 +43,16 @@ const CreateAlbum = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form
+            onSubmit={handleSubmit}
+            style={styles.card}
+        >
             <h3>Create Album</h3>
 
             <div>
                 <label>Album Name</label>
                 <input
+                    style={styles.input}
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -56,6 +62,7 @@ const CreateAlbum = () => {
             <div>
                 <label>Description</label>
                 <textarea
+                    style={styles.input}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
@@ -64,6 +71,7 @@ const CreateAlbum = () => {
             <div>
                 <label>Hashtags</label>
                 <input
+                    style={styles.input}
                     type="text"
                     placeholder="travel, memories, holiday"
                     value={hashtags}
@@ -71,11 +79,38 @@ const CreateAlbum = () => {
                 />
             </div>
 
-            <button type="submit">
+            <button type="submit" style={styles.button}>
                 Create Album
             </button>
         </form>
     );
+};
+
+const styles = {
+    card: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        marginBottom: '20px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        marginTop: '5px',
+        marginBottom: '15px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px'
+    }
 };
 
 export default CreateAlbum;

@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import ReportPost from './ReportPost';
+import LikePost from './LikePost';
 
-const PostPreview = ({ post }) => {
+
+const PostPreview = ({post, posts, setPosts}) => {
+
   const handleDelete = async (id) => {
       try {
           await fetch(
@@ -11,42 +14,30 @@ const PostPreview = ({ post }) => {
               }
           );
 
-          window.location.reload();
+          setPosts( posts.filter( p => p._id !== id));
 
       } catch (error) {
           console.error(error);
       }
   };
 
-  const [reportReason, setReportReason] = useState('');
+  const currentUser = JSON.parse(
+      localStorage.getItem('currentUser')
+  );
 
-  const handleReport = async (id) => {
-      try {
-          await fetch(
-              `http://localhost:3000/api/posts/${id}/report`,
-              {
-                  method: 'PUT',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                      reason: reportReason
-                  })
-              }
-          );
-
-          alert('Post reported!');
-
-      } catch (error) {
-          console.error(error);
-      }
-  };
+  const isOwner =
+      currentUser?.id === post.userId;
 
   return (
     <article style={styles.card}>
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
-        <span style={styles.username}>{post.username}</span>
+        <Link
+            to={post.userId ? `/profile/${post.userId}`: '#'}
+            style={styles.link}
+        >
+            {post.username}
+        </Link>
         <span style={styles.timestamp}>
           {post.timestamp
           ? new Date(post.timestamp).toLocaleDateString()
@@ -55,47 +46,57 @@ const PostPreview = ({ post }) => {
       </div>
       
       <Link to={`/post/${post._id}`}>
-        <div style={styles.imagePlaceholder}>
-          IMAGE HERE
-        </div>
+        {post.image && post.image.startsWith('/uploads/') ? (
+            <img
+                src={`http://localhost:3000${post.image}`}
+                alt="Post"
+                style={styles.image}
+            />
+        ) : (
+            <div style={styles.imagePlaceholder}>
+                No Image Available
+            </div>
+        )}
       </Link>
       
       <div style={styles.content}>
         <p style={styles.caption}>{post.caption}</p>
+        <p>
+            {post.hashtags?.map(tag => (
+              <Link
+                  key={tag}
+                  to={`/home?search=${tag}`}
+                  style={{
+                      marginRight: '6px',
+                      color: 'blue',
+                      textDecoration: 'none'
+                  }}
+              >
+                  #{tag}
+              </Link>
+          ))}
+        </p>
         <div style={styles.stats}>
-          <span>{post.likes} likes</span>
+          <LikePost post={post} />
           <span>{post.comments?.length || 0} comments</span>
         </div>
-        <button onClick={() => handleDelete(post._id)}>
-          Delete
-        </button>
-        <select
-          value={reportReason}
-          onChange={(e) => setReportReason(e.target.value)}
-      >
-          <option value="">
-              Select reason
-          </option>
-
-          <option value="Spam">
-              Spam
-          </option>
-
-          <option value="Inappropriate Content">
-              Inappropriate Content
-          </option>
-
-          <option value="Harassment">
-              Harassment
-          </option>
-
-          <option value="Other">
-              Other
-          </option>
-      </select>
-        <button onClick={() => handleReport(post._id)}>
-            Report
-        </button>
+        {post.comments ?.slice(0, 2)
+            .map((comment, index) => (
+                <div key={index}>
+                    <strong>
+                        {comment.username}
+                    </strong>
+                    : {comment.text}
+                </div>
+        ))}
+        {isOwner && (
+            <button onClick={() => handleDelete(post._id)}>
+                Delete
+            </button>
+        )}
+        {!isOwner && (
+            <ReportPost postId={post._id} />
+        )}
       </div>
     </article>
   );
@@ -103,9 +104,13 @@ const PostPreview = ({ post }) => {
 
 const styles = {
   card: {
-    border: '1px solid #ccc',
-    marginBottom: '20px',
-    backgroundColor: 'white'
+      backgroundColor: '#fffaf2',
+      borderRadius: '18px',
+      boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+      marginBottom: '25px',
+      overflow: 'hidden',
+      maxWidth: '650px',
+      margin: '25px auto'
   },
   header: {
     display: 'flex',
@@ -114,15 +119,10 @@ const styles = {
     gap: '10px'
   },
   avatarPlaceholder: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    color: '#666'
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      backgroundColor: '#d6c4b2'
   },
   username: {
     fontWeight: 'bold'
@@ -143,7 +143,7 @@ const styles = {
     fontSize: '14px'
   },
   content: {
-    padding: '12px 16px'
+    padding: '20px'
   },
   caption: {
     marginBottom: '8px'
@@ -153,6 +153,11 @@ const styles = {
     gap: '20px',
     color: '#666',
     fontSize: '14px'
+  },
+  image: {
+      width: '100%',
+      height: '320px',
+      objectFit: 'cover'
   }
 };
 

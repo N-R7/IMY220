@@ -4,6 +4,10 @@ const Navigation = () => {
   const currentUser = JSON.parse(
       localStorage.getItem('currentUser')
   );
+
+  const isAdmin =
+    currentUser?.role === 'admin';
+
   return (
     <nav style={styles.nav}>
       <div style={styles.logo}>
@@ -17,10 +21,29 @@ const Navigation = () => {
         >
             Profile
         </Link>
+        {isAdmin && (
+            <Link
+                to="/admin"
+                style={styles.link}
+            >
+                Admin
+            </Link>
+        )}
         <button
-          style={styles.logoutBtn}
-          onClick={() => { window.location.href = '/'; }}>
-          Logout
+            style={styles.logoutBtn}
+            onClick={() => {
+                localStorage.removeItem(
+                    'currentUser'
+                );
+
+                localStorage.removeItem(
+                    'currentUserData'
+                );
+
+                window.location.href = '/';
+            }}
+        >
+            Logout
         </button>
       </div>
     </nav>
@@ -28,36 +51,43 @@ const Navigation = () => {
 };
 
 const styles = {
-  nav: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '12px 30px',
-    backgroundColor: '#f8f8f8',
-    borderBottom: '1px solid #ddd'
-  },
-  logo: {
-    fontSize: '20px',
-    fontWeight: 'bold'
-  },
-  navLinks: {
-    display: 'flex',
-    gap: '20px',
-    alignItems: 'center'
-  },
-  link: {
-    color: '#333',
-    textDecoration: 'none',
-    padding: '4px 8px'
-  },
-  logoutBtn: {
-    background: 'none',
-    border: 'none',
-    color: '#333',
-    cursor: 'pointer',
-    padding: '4px 8px',
-    fontSize: '16px'
-  }
+    nav: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        padding: '18px 40px',
+        backgroundColor: '#ede0d4',
+        borderBottom: '2px solid #d6c4b2',
+        boxSizing: 'border-box'
+    },
+
+    logo: {
+        fontSize: '30px',
+        fontWeight: 'bold'
+    },
+
+    navLinks: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '30px'
+    },
+
+    link: {
+        color: '#5c4033',
+        textDecoration: 'none',
+        fontWeight: 'bold',
+        fontSize: '18px'
+    },
+
+    logoutBtn: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        cursor: 'pointer'
+    }
 };
 
 export default Navigation;

@@ -12,29 +12,34 @@ const ProfilePreview = ({ user }) => {
 };
 
 const styles = {
-  card: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '8px 12px',
-    gap: '12px',
-    borderBottom: '1px solid #eee'
-  },
-  avatarPlaceholder: {
-    width: '36px',
-    height: '36px',
-    borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    color: '#666'
-  },
-  username: {
-    fontWeight: 'bold',
-    textDecoration: 'none',
-    color: '#333'
-  }
+    card: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '12px 16px',
+        backgroundColor: '#fffaf2',
+        borderRadius: '14px',
+        marginBottom: '10px',
+        boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
+    },
+
+    avatarPlaceholder: {
+        width: '42px',
+        height: '42px',
+        borderRadius: '50%',
+        backgroundColor: '#d6c4b2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '18px'
+    },
+
+    username: {
+        fontWeight: 'bold',
+        textDecoration: 'none',
+        color: '#5c4033',
+        fontSize: '16px'
+    }
 };
 
 export default ProfilePreview;

@@ -60,29 +60,71 @@ const EditProfile = ({ user }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}
+             style={styles.card}>
+
             <h4>Edit Profile</h4>
 
-            <input
+            <input style={styles.input}
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
             />
 
-            <textarea
+            <textarea style={styles.input}
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
             />
 
-            <button type="submit">
+            <button type="submit"
+                    style={styles.button}>
                 Save Changes
             </button>
             <button type="button"
-              onClick={handleDelete}>
+                    style={styles.deleteButton}
+                    onClick={handleDelete}
+            >
                 Delete Profile
             </button>
         </form>
     );
+};
+
+const styles = {
+    card: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        marginTop: '20px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        marginBottom: '15px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        marginRight: '10px',
+        cursor: 'pointer'
+    },
+
+    deleteButton: {
+        backgroundColor: '#b23a48',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        cursor: 'pointer'
+    }
 };
 
 export default EditProfile;

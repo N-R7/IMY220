@@ -1,7 +1,10 @@
 const Profile = ({ user }) => {
   return (
     <div style={styles.profile}>
-      <div style={styles.avatarPlaceholder}>👤</div>
+      <img src={user.profileImage}
+           alt={user.username}
+           style={styles.avatar}
+      />
       <div style={styles.info}>
         <h2 style={styles.username}>{user.username}</h2>
         <p style={styles.bio}>{user.bio}</p>
@@ -17,32 +20,31 @@ const Profile = ({ user }) => {
 
 const styles = {
   profile: {
-    display: 'flex',
-    gap: '30px',
-    padding: '20px',
-    alignItems: 'center'
+      display: 'flex',
+      gap: '30px',
+      padding: '30px',
+      alignItems: 'center',
+      backgroundColor: '#fffaf2',
+      borderRadius: '20px',
+      boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+      marginBottom: '20px'
   },
-  avatarPlaceholder: {
+  avatar: {
     width: '80px',
     height: '80px',
     borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '30px',
-    color: '#666'
+    objectFit: 'cover'
   },
   info: {
     flex: 1
   },
   username: {
-    margin: 0,
-    fontSize: '24px'
+      fontSize: '28px',
+      color: '#5c4033',
+      marginBottom: '10px'
   },
   bio: {
-    color: '#666',
-    margin: '4px 0'
+      color: '#6d5d4f'
   },
   stats: {
     display: 'flex',

@@ -2,6 +2,9 @@ import { useState } from 'react';
 
 const EditPost = ({ post }) => {
   const [caption, setCaption] = useState(post?.caption || '');
+  const [hashtags, setHashtags] = useState(
+      post?.hashtags?.join(', ') || ''
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +18,11 @@ const EditPost = ({ post }) => {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            caption
+              caption,
+              hashtags: hashtags
+                  .split(',')
+                  .map(tag => tag.trim())
+                  .filter(tag => tag !== '')
           })
         }
       );
@@ -39,6 +46,13 @@ const EditPost = ({ post }) => {
       <textarea
         value={caption}
         onChange={(e) => setCaption(e.target.value)}
+      />
+
+      <input
+          type="text"
+          value={hashtags}
+          onChange={(e) => setHashtags(e.target.value)}
+          placeholder="travel, beach, photography"
       />
 
       <button type="submit">

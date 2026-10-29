@@ -6,9 +6,32 @@ const { ObjectId } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const multer = require('multer');
+const path = require('path');
+
 app.use(cors()); 
 
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+
+    filename: (req, file, cb) => {
+        cb(
+            null,
+            Date.now() +
+            path.extname(file.originalname)
+        );
+    }
+});
+
+const upload = multer({
+    storage
+});
+
 
 app.post('/api/signup', async (req, res) => {
   try {
@@ -21,11 +44,13 @@ app.post('/api/signup', async (req, res) => {
     } = req.body;
 
     const newUser = {
-      username,
-      email,
-      password,
-      bio: "",
-      friends: []
+        username,
+        email,
+        password,
+        bio: "",
+        friends: [],
+        friendRequests: [],
+        role: "user"
     };
 
     const result = await db
@@ -69,7 +94,8 @@ app.post('/api/signin', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
 
@@ -184,11 +210,23 @@ app.get('/api/albums', async (req, res) => {
     }
 });
 
-app.post('/api/posts', async (req, res) => {
+app.post('/api/posts', upload.single('image'), async (req, res) => {
     try {
         const db = getDB();
 
-        const newPost = req.body;
+        const newPost = {
+            userId: req.body.userId,
+            username: req.body.username,
+            caption: req.body.caption,
+            hashtags: JSON.parse(req.body.hashtags),
+            likes: 0,
+            comments: [],
+            timestamp: new Date(),
+            reportCount: 0,
+            image: req.file
+                ? `/uploads/${req.file.filename}`
+                : null
+        };
 
         const result = await db
             .collection('posts')
@@ -213,7 +251,8 @@ app.put('/api/posts/:id', async (req, res) => {
                 { _id: new ObjectId(req.params.id) },
                 {
                     $set: {
-                        caption: req.body.caption
+                        caption: req.body.caption,
+                        hashtags: req.body.hashtags
                     }
                 }
             );
@@ -357,22 +396,40 @@ app.put('/api/users/:id/unfriend', async (req, res) => {
     try {
         const db = getDB();
 
-        const result = await db
+        const currentUser = await db
             .collection('users')
-            .updateOne(
-                {
-                    _id: new ObjectId(req.params.id)
-                },
-                {
-                    $pull: {
-                        friends: req.body.friend
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('users').updateOne(
+            {
+                _id: new ObjectId(req.params.id)
+            },
+            {
+                $pull: {
+                    friends: {
+                        username: req.body.friend
                     }
                 }
-            );
+            }
+        );
+
+        await db.collection('users').updateOne(
+            {
+                username: req.body.friend
+            },
+            {
+                $pull: {
+                    friends: {
+                        username: currentUser.username
+                    }
+                }
+            }
+        );
 
         res.json({
-            success: true,
-            modifiedCount: result.modifiedCount
+            success: true
         });
 
     } catch (err) {
@@ -424,6 +481,9 @@ app.put('/api/posts/:id/report', async (req, res) => {
                     _id: new ObjectId(req.params.id)
                 },
                 {
+                    $inc: {
+                        reportCount: 1
+                    },
                     $set: {
                         reported: true,
                         reportReason: req.body.reason
@@ -441,6 +501,311 @@ app.put('/api/posts/:id/report', async (req, res) => {
             success: false,
             error: err.message
         });
+    }
+});
+
+app.put('/api/users/:id/request', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $addToSet: {
+                        friendRequests: req.body.username
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/users/:id/accept-request', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const acceptedUser = await db
+            .collection('users')
+            .findOne({
+                username: req.body.username
+            });
+
+        const currentUser = await db
+            .collection('users')
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('users').updateOne(
+            {
+                _id: new ObjectId(req.params.id)
+            },
+            {
+                $pull: {
+                    friendRequests: req.body.username
+                },
+                $addToSet: {
+                    friends: {
+                        id: acceptedUser._id.toString(),
+                        username: acceptedUser.username
+                    }
+                }
+            }
+        );
+
+        await db.collection('users').updateOne(
+            {
+                username: req.body.username
+            },
+            {
+                $addToSet: {
+                    friends: {
+                        id: currentUser._id.toString(),
+                        username: currentUser.username
+                    }
+                }
+            }
+        );
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/albums/:id/add-post', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $addToSet: {
+                        posts: req.body.postId
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/albums/:id/remove-post', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $pull: {
+                        posts: req.body.postId
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/posts/:id/like', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $inc: {
+                        likes: 1
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
+    }
+});
+
+app.put('/api/posts/:id/unlike', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const post = await db
+            .collection('posts')
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        likes: Math.max(
+                            (post.likes || 0) - 1,
+                            0
+                        )
+                    }
+                }
+            );
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
+    }
+});
+
+app.get('/api/report-reasons', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const reasons = await db
+            .collection('reportReasons')
+            .find({})
+            .toArray();
+
+        res.json(reasons);
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+});
+
+app.post('/api/report-reasons', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('reportReasons')
+            .insertOne({
+                reason: req.body.reason
+            });
+
+        res.json({
+            success: true,
+            insertedId: result.insertedId
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
+    }
+});
+
+app.put('/api/posts/:id/dismiss-report', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        reported: false,
+                        reportReason: '',
+                        reportCount: 0
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
     }
 });
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const AlbumPreview = ({ album }) => {
     const [editing, setEditing] = useState(false);
@@ -48,7 +49,9 @@ const AlbumPreview = ({ album }) => {
 
     return (
         <div>
-            <h4>{album.name}</h4>
+            <Link to={`/album/${album._id}`}>
+                <h4>{album.name}</h4>
+            </Link>
             <p>{album.description}</p>
 
             <button onClick={() => setEditing(!editing)}>

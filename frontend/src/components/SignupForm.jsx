@@ -92,7 +92,7 @@ const SignupForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={styles.form}>
       <h2>Sign Up</h2>
       
       <div>
@@ -139,11 +139,38 @@ const SignupForm = () => {
         {errors.confirmPassword && <span style={{ color: 'red' }}>{errors.confirmPassword}</span>}
       </div>
       
-      <button type="submit" disabled={loading}>  {}
+      <button type="submit" disabled={loading} style={styles.button}>  {}
         {loading ? 'Signing up...' : 'Sign Up'}
       </button>
     </form>
   );
+};
+
+const styles = {
+    form: {
+        backgroundColor: '#fffaf2',
+        padding: '25px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        minWidth: '350px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2',
+        marginBottom: '10px'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        padding: '10px',
+        borderRadius: '10px',
+        width: '100%'
+    }
 };
 
 export default SignupForm;
