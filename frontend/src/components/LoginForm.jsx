@@ -53,6 +53,21 @@ const LoginForm = () => {
               JSON.stringify(data.user)
           );
 
+          const usersResponse = await fetch(
+              'http://localhost:3000/api/users'
+          );
+
+          const users = await usersResponse.json();
+
+          const fullUser = users.find(
+              user => user._id === data.user.id
+          );
+
+          localStorage.setItem(
+              'currentUserData',
+              JSON.stringify(fullUser)
+          );
+
           alert(data.message);
 
           setErrors({});

@@ -3,6 +3,10 @@ import { useState } from 'react';
 const Comments = ({ comments, postId }) => {
     const [newComment, setNewComment] = useState('');
 
+    const currentUser = JSON.parse(
+        localStorage.getItem('currentUser')
+    );
+
     const handleComment = async () => {
         try {
             await fetch(
@@ -14,7 +18,7 @@ const Comments = ({ comments, postId }) => {
                     },
                     body: JSON.stringify({
                         comment: {
-                            username: 'nina',
+                            username: currentUser?.username,
                             text: newComment
                         }
                     })

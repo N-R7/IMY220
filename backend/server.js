@@ -221,6 +221,7 @@ app.post('/api/posts', upload.single('image'), async (req, res) => {
             hashtags: JSON.parse(req.body.hashtags),
             likes: 0,
             comments: [],
+            timestamp: new Date(),
             image: req.file
                 ? `/uploads/${req.file.filename}`
                 : null
