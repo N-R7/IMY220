@@ -16,6 +16,7 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [activeTab, setActiveTab] = useState('posts');
 
   const currentUser = JSON.parse(
         localStorage.getItem('currentUser')
@@ -185,32 +186,59 @@ const ProfilePage = () => {
                 </button>
             </>
         )}
-        
-        <section>
-          <h3>My Posts</h3>
-          {isOwnProfile && (
-                <CreatePost
-                    posts={posts}
-                    setPosts={setPosts}
-                />
-            )}
-          {userPosts.map(post => (
-              <PostPreview key={post._id} post={post} />
-          ))}
-        </section>
 
-        <section>
-          <h3>Albums</h3>
-          {isOwnProfile && (
-                <CreateAlbum />
-            )}
-          {userAlbums.map(album => (
-              <AlbumPreview
-                  key={album._id}
-                  album={album}
-              />
-          ))}
-        </section>
+        <div>
+
+            <button onClick={() => setActiveTab('posts')}>
+                Posts
+            </button>
+
+            <button onClick={() => setActiveTab('albums')}>
+                Albums
+            </button>
+
+        </div>
+        
+        {activeTab === 'posts' && (
+            <section>
+
+                <h3>My Posts</h3>
+
+                {isOwnProfile && (
+                    <CreatePost
+                        posts={posts}
+                        setPosts={setPosts}
+                    />
+                )}
+
+                {userPosts.map(post => (
+                    <PostPreview
+                        key={post._id}
+                        post={post}
+                    />
+                ))}
+
+            </section>
+        )}
+
+        {activeTab === 'albums' && (
+            <section>
+
+                <h3>Albums</h3>
+
+                {isOwnProfile && (
+                    <CreateAlbum />
+                )}
+
+                {userAlbums.map(album => (
+                    <AlbumPreview
+                        key={album._id}
+                        album={album}
+                    />
+                ))}
+
+            </section>
+        )}
 
       </main>
     </div>

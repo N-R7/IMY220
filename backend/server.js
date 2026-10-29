@@ -552,6 +552,98 @@ app.put('/api/users/:id/accept-request', async (req, res) => {
     }
 });
 
+app.put('/api/albums/:id/add-post', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $addToSet: {
+                        posts: req.body.postId
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/albums/:id/remove-post', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $pull: {
+                        posts: req.body.postId
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/albums/:id/remove-post', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('albums')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $pull: {
+                        posts: req.body.postId
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

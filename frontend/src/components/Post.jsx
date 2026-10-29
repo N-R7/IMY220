@@ -1,9 +1,16 @@
+import { Link } from 'react-router-dom';
+
 const Post = ({ post }) => {
   return (
     <article>
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
-        <span style={styles.username}>{post.username}</span>
+        <Link
+            to={post.userId ? `/profile/${post.userId}` : '#'}
+            style={styles.username}
+        >
+            {post.username}
+        </Link>
         <span style={styles.timestamp}>
           {new Date(post.timestamp).toLocaleDateString()}
         </span>
@@ -15,6 +22,13 @@ const Post = ({ post }) => {
       
       <div style={styles.content}>
         <p style={styles.caption}>{post.caption}</p>
+        <p>
+            {post.hashtags?.map(tag => (
+                <span key={tag}>
+                    #{tag}{' '}
+                </span>
+            ))}
+        </p>
         <div style={styles.stats}>
           <span>{post.likes} likes</span>
         </div>

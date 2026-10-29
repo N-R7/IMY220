@@ -10,6 +10,10 @@ import { useState, useEffect } from 'react';
 const PostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [albums, setAlbums] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState('');
+  const [showAlbums, setShowAlbums] = useState(false);
+
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   useEffect(() => {
@@ -21,6 +25,13 @@ const PostPage = () => {
               );
 
               setPost(foundPost);
+          })
+          .catch(error => console.error(error));
+
+      fetch('http://localhost:3000/api/albums')
+          .then(response => response.json())
+          .then(data => {
+              setAlbums(data);
           })
           .catch(error => console.error(error));
   }, [id]);
@@ -55,6 +66,29 @@ const PostPage = () => {
       }
   };
 
+  const handleAddToAlbum = async () => {
+      try {
+
+          await fetch(
+              `http://localhost:3000/api/albums/${selectedAlbum}/add-post`,
+              {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                      postId: post._id
+                  })
+              }
+          );
+
+          alert('Post added to album!');
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <div>
       <Navigation />
@@ -72,6 +106,39 @@ const PostPage = () => {
                 <button onClick={handleDelete}>
                     Delete Post
                 </button>
+                <button onClick={() =>
+                        setShowAlbums(!showAlbums) }>
+                    Add To Album
+                </button>
+                {showAlbums && (
+                  <div>
+
+                      <select
+                          value={selectedAlbum}
+                          onChange={(e) =>
+                              setSelectedAlbum(e.target.value)
+                          }
+                      >
+                          <option value="">
+                              Select Album
+                          </option>
+
+                          {albums.map(album => (
+                              <option
+                                  key={album._id}
+                                  value={album._id}
+                              >
+                                  {album.name}
+                              </option>
+                          ))}
+                      </select>
+
+                      <button onClick={handleAddToAlbum}>
+                          Add
+                      </button>
+
+                  </div>
+                )}
             </>
         )}
       </main>
