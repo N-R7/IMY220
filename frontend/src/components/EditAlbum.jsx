@@ -37,11 +37,12 @@ const EditAlbum = ({ album }) => {
     };
 
     return (
-        <div>
+        <div style={styles.card}>
 
             <h3>Edit Album</h3>
 
             <input
+                style={styles.input}
                 value={name}
                 onChange={(e) =>
                     setName(e.target.value)
@@ -49,6 +50,7 @@ const EditAlbum = ({ album }) => {
             />
 
             <textarea
+                style={styles.input}
                 value={description}
                 onChange={(e) =>
                     setDescription(e.target.value)
@@ -56,18 +58,46 @@ const EditAlbum = ({ album }) => {
             />
 
             <input
+                style={styles.input}
                 value={hashtags}
                 onChange={(e) =>
                     setHashtags(e.target.value)
                 }
             />
 
-            <button onClick={handleUpdate}>
+            <button style={styles.button}onClick ={handleUpdate}>
                 Save Album
             </button>
 
         </div>
     );
+};
+
+const styles = {
+    card: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        marginTop: '20px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        marginBottom: '15px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        cursor: 'pointer'
+    }
 };
 
 export default EditAlbum;

@@ -3,7 +3,14 @@ import LikePost from './LikePost';
 
 const Post = ({ post }) => {
   return (
-    <article>
+    <article
+        style={{
+            backgroundColor: '#fffaf2',
+            borderRadius: '20px',
+            boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+            overflow: 'hidden'
+        }}
+    >
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
         <Link
@@ -47,58 +54,69 @@ const Post = ({ post }) => {
 };
 
 const styles = {
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '10px 16px',
-    gap: '10px'
-  },
-  avatarPlaceholder: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    color: '#666'
-  },
-  username: {
-    fontWeight: 'bold'
-  },
-  timestamp: {
-    color: '#666',
-    fontSize: '12px',
-    marginLeft: 'auto'
-  },
-  imagePlaceholder: {
-    width: '100%',
-    height: '200px',
-    backgroundColor: '#f0f0f0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: '#999',
-    fontSize: '14px'
-  },
-  content: {
-    padding: '12px 16px'
-  },
-  caption: {
-    marginBottom: '8px'
-  },
-  stats: {
-    display: 'flex',
-    gap: '20px',
-    color: '#666',
-    fontSize: '14px'
-  },
-  image: {
-      width: '100%',
-      height: '200px',
-      objectFit: 'cover'
-  }
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '15px 20px',
+        gap: '12px'
+    },
+
+    avatarPlaceholder: {
+        width: '42px',
+        height: '42px',
+        borderRadius: '50%',
+        backgroundColor: '#d6c4b2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '18px'
+    },
+
+    username: {
+        fontWeight: 'bold',
+        color: '#5c4033',
+        textDecoration: 'none',
+        fontSize: '18px'
+    },
+
+    timestamp: {
+        color: '#6d5d4f',
+        fontSize: '13px',
+        marginLeft: 'auto'
+    },
+
+    imagePlaceholder: {
+        width: '100%',
+        height: '350px',
+        backgroundColor: '#e8dfd1',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#777'
+    },
+
+    content: {
+        padding: '20px'
+    },
+
+    caption: {
+        color: '#5c4033',
+        fontSize: '16px',
+        marginBottom: '15px'
+    },
+
+    stats: {
+        display: 'flex',
+        gap: '20px',
+        color: '#6d5d4f'
+    },
+
+    image: {
+        width: '100%',
+        height: '450px',
+        objectFit: 'cover',
+        borderRadius: '10px'
+    }
 };
 
 export default Post;

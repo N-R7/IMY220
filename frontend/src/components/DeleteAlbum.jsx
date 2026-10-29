@@ -20,7 +20,17 @@ const DeleteAlbum = ({ album }) => {
     };
 
     return (
-        <button onClick={handleDelete}>
+       <button
+            onClick={handleDelete}
+            style={{
+                backgroundColor: '#b23a48',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '10px 16px',
+                cursor: 'pointer'
+            }}
+        >
             Delete Album
         </button>
     );

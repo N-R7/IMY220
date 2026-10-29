@@ -14,7 +14,14 @@ const PostPage = () => {
   const [selectedAlbum, setSelectedAlbum] = useState('');
   const [showAlbums, setShowAlbums] = useState(false);
 
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  const currentUser = JSON.parse(
+        localStorage.getItem('currentUser')
+    );
+
+    if (!currentUser) {
+        window.location.href = '/';
+        return null;
+    }
 
   useEffect(() => {
       fetch('http://localhost:3000/api/posts')
@@ -90,9 +97,16 @@ const PostPage = () => {
   };
 
   return (
-    <div>
+    <div style={{
+        backgroundColor: '#f5efe6',
+        minHeight: '100vh'
+    }}>
       <Navigation />
-      <main>
+            <main style={{
+            maxWidth: '900px',
+            margin: '0 auto',
+            padding: '20px'
+        }}>
         <Post post={post} />
         <Comments comments={post.comments} 
           postId={post._id}/>

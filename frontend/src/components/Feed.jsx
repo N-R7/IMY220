@@ -3,7 +3,14 @@ import ReportedPostCard from './ReportedPostCard';
 
 const Feed = ({ posts, setPosts }) => {
     return (
-        <section>
+        <section
+            style={{
+                display: 'grid',
+                gridTemplateColumns:
+                    'repeat(auto-fit, minmax(500px, 1fr))',
+                gap: '20px'
+            }}
+        >
 
             {posts.length === 0 ? (
                 <p>No posts matched your search.</p>

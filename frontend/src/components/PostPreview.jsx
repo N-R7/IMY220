@@ -104,9 +104,13 @@ const PostPreview = ({post, posts, setPosts}) => {
 
 const styles = {
   card: {
-    border: '1px solid #ccc',
-    marginBottom: '20px',
-    backgroundColor: 'white'
+      backgroundColor: '#fffaf2',
+      borderRadius: '18px',
+      boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+      marginBottom: '25px',
+      overflow: 'hidden',
+      maxWidth: '650px',
+      margin: '25px auto'
   },
   header: {
     display: 'flex',
@@ -115,15 +119,10 @@ const styles = {
     gap: '10px'
   },
   avatarPlaceholder: {
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    color: '#666'
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      backgroundColor: '#d6c4b2'
   },
   username: {
     fontWeight: 'bold'
@@ -144,7 +143,7 @@ const styles = {
     fontSize: '14px'
   },
   content: {
-    padding: '12px 16px'
+    padding: '20px'
   },
   caption: {
     marginBottom: '8px'
@@ -157,7 +156,7 @@ const styles = {
   },
   image: {
       width: '100%',
-      height: '200px',
+      height: '320px',
       objectFit: 'cover'
   }
 };

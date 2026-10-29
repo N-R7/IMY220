@@ -85,7 +85,7 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={styles.form}>
       <h2>Login</h2>
       
       <div>
@@ -110,11 +110,38 @@ const LoginForm = () => {
         {errors.password && <span style={{ color: 'red' }}>{errors.password}</span>}
       </div>
       
-      <button type="submit" disabled={loading}>  {}
+      <button type="submit" disabled={loading} style={styles.button}>  {}
         {loading ? 'Logging in...' : 'Login'}
       </button>
     </form>
   );
+};
+
+const styles = {
+    form: {
+        backgroundColor: '#fffaf2',
+        padding: '25px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        minWidth: '350px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2',
+        marginBottom: '10px'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        padding: '10px',
+        borderRadius: '10px',
+        width: '100%'
+    }
 };
 
 export default LoginForm;

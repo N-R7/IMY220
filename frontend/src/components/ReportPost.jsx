@@ -41,11 +41,16 @@ const ReportPost = ({ postId }) => {
     return (
         <>
             <select
+                style={styles.select}
                 value={reportReason}
                 onChange={(e) =>
                     setReportReason(e.target.value)
                 }
             >
+                <option value="">
+                    Select Reason
+                </option>
+
                 {reasons.map(reason => (
                     <option
                         key={reason._id}
@@ -57,13 +62,48 @@ const ReportPost = ({ postId }) => {
             </select>
 
             <button
+                style={
+                    reported
+                    ? styles.disabledButton
+                    : styles.button
+                }
                 disabled={reported}
                 onClick={handleReport}
             >
-                {reported ? 'Reported' : 'Report'}
+                {reported
+                    ? 'Reported'
+                    : 'Report Post'}
             </button>
         </>
     );
+};
+
+const styles = {
+    select: {
+        padding: '8px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2',
+        marginRight: '10px',
+        backgroundColor: '#fffaf2'
+    },
+
+    button: {
+        backgroundColor: '#b23a48',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '8px 14px',
+        cursor: 'pointer'
+    },
+
+    disabledButton: {
+        backgroundColor: '#999',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '8px 14px',
+        cursor: 'not-allowed'
+    }
 };
 
 export default ReportPost;

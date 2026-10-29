@@ -22,6 +22,11 @@ const ProfilePage = () => {
         localStorage.getItem('currentUser')
     );
 
+    if (!currentUser) {
+        window.location.href = '/';
+        return null;
+    }
+
   const isOwnProfile =
         currentUser?.id === id;
 
@@ -154,120 +159,233 @@ const ProfilePage = () => {
 };
 
   return (
-    <div>
-      <Navigation />
-      <main>
-        <section>
-          <Profile user={user} />
-            {isOwnProfile && (
-                <EditProfile user={user} />
-            )}
-        </section>
-        
-        <section>
-            {!isOwnProfile && (
-                <p>
-                    Friend Status:{' '}
+        <div style={styles.page}>
+            <Navigation />
 
-                    {isFriend
-                        ? 'Friends'
-                        : friendRequests.includes(
-                            currentUser?.username
-                        )
-                        ? 'Friend Request Pending'
-                        : 'Not Friends'}
-                </p>
-            )}
-          {(isOwnProfile || isFriend) ? (<FriendsList friends={user?.friends || []} />)
-           : (<p>Friends list is private.</p>)}
-          {isOwnProfile && (
-                <>
-                    <h3>Friend Requests</h3>
+            <main style={styles.content}>
 
-                    {friendRequests.map((request, index) => (
-                        <div key={index}>
-                            {request}
+                <div style={styles.topSection}>
 
-                            <button
-                                onClick={() =>
-                                    handleAcceptRequest(request)
-                                }
-                            >
-                                Accept
-                            </button>
-                        </div>
-                    ))}
-                </>
-            )}
-        </section>
-        {!isOwnProfile && (
-            <>
-                <button onClick={handleAddFriend}>
-                    Add Friend
-                </button>
+                    <div>
+                        <Profile user={user} />
 
-                <button onClick={handleUnfriend}>
-                    Unfriend
-                </button>
-            </>
-        )}
+                        {isOwnProfile && (
+                            <EditProfile user={user} />
+                        )}
+                    </div>
 
-        <div>
+                    <section style={styles.sideCard}>
 
-            <button onClick={() => setActiveTab('posts')}>
-                Posts
-            </button>
+                        {!isOwnProfile && (
+                            <p>
+                                Friend Status:{' '}
+                                {isFriend
+                                    ? 'Friends'
+                                    : friendRequests.includes(
+                                        currentUser?.username
+                                    )
+                                    ? 'Friend Request Pending'
+                                    : 'Not Friends'}
+                            </p>
+                        )}
 
-            <button onClick={() => setActiveTab('albums')}>
-                Albums
-            </button>
+                        {(isOwnProfile || isFriend) ? (
+                            <FriendsList
+                                friends={user?.friends || []}
+                            />
+                        ) : (
+                            <p>
+                                Friends list is private.
+                            </p>
+                        )}
 
+                        {isOwnProfile && (
+                            <>
+                                <h3>
+                                    Friend Requests
+                                </h3>
+
+                                {friendRequests.map(
+                                    (request, index) => (
+                                        <div key={index}>
+                                            {request}
+
+                                            <button
+                                                style={styles.button}
+                                                onClick={() =>
+                                                    handleAcceptRequest(
+                                                        request
+                                                    )
+                                                }
+                                            >
+                                                Accept
+                                            </button>
+                                        </div>
+                                    )
+                                )}
+                            </>
+                        )}
+
+                    </section>
+
+                </div>
+
+                {!isOwnProfile && (
+                    <div
+                        style={{
+                            marginBottom: '20px'
+                        }}
+                    >
+                        <button
+                            style={styles.button}
+                            onClick={handleAddFriend}
+                        >
+                            Add Friend
+                        </button>
+
+                        <button
+                            style={styles.button}
+                            onClick={handleUnfriend}
+                        >
+                            Unfriend
+                        </button>
+                    </div>
+                )}
+
+                <div style={styles.tabs}>
+                    <button
+                        style={
+                            activeTab === 'posts'
+                            ? styles.activeTab
+                            : styles.tab
+                        }
+                        onClick={() =>
+                            setActiveTab('posts')
+                        }
+                    >
+                        Posts
+                    </button>
+
+                    <button
+                        style={
+                            activeTab === 'albums'
+                            ? styles.activeTab
+                            : styles.tab
+                        }
+                        onClick={() =>
+                            setActiveTab('albums')
+                        }
+                    >
+                        Albums
+                    </button>
+                </div>
+
+                {activeTab === 'posts' && (
+                    <section>
+                        <h3>My Posts</h3>
+
+                        {isOwnProfile && (
+                            <CreatePost
+                                posts={posts}
+                                setPosts={setPosts}
+                            />
+                        )}
+
+                        {userPosts.map(post => (
+                            <PostPreview
+                                key={post._id}
+                                post={post}
+                            />
+                        ))}
+                    </section>
+                )}
+
+                {activeTab === 'albums' && (
+                    <section>
+                        <h3>Albums</h3>
+
+                        {isOwnProfile && (
+                            <CreateAlbum />
+                        )}
+
+                        {userAlbums.map(album => (
+                            <AlbumPreview
+                                key={album._id}
+                                album={album}
+                            />
+                        ))}
+                    </section>
+                )}
+
+            </main>
         </div>
-        
-        {activeTab === 'posts' && (
-            <section>
-
-                <h3>My Posts</h3>
-
-                {isOwnProfile && (
-                    <CreatePost
-                        posts={posts}
-                        setPosts={setPosts}
-                    />
-                )}
-
-                {userPosts.map(post => (
-                    <PostPreview
-                        key={post._id}
-                        post={post}
-                    />
-                ))}
-
-            </section>
-        )}
-
-        {activeTab === 'albums' && (
-            <section>
-
-                <h3>Albums</h3>
-
-                {isOwnProfile && (
-                    <CreateAlbum />
-                )}
-
-                {userAlbums.map(album => (
-                    <AlbumPreview
-                        key={album._id}
-                        album={album}
-                    />
-                ))}
-
-            </section>
-        )}
-
-      </main>
-    </div>
-  );
+    );
 };
+
+const styles = {
+    page: {
+        backgroundColor: '#f5efe6',
+        minHeight: '100vh'
+    },
+
+    content: {
+        width: '100%',
+        padding: '20px',
+        boxSizing: 'border-box'
+    },
+
+    topSection: {
+        display: 'grid',
+        gridTemplateColumns: '2fr 1fr',
+        gap: '20px',
+        alignItems: 'start',
+        marginBottom: '20px'
+    },
+
+    sideCard: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        boxShadow:
+            '0 5px 15px rgba(0,0,0,0.1)'
+    },
+
+    tabs: {
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '40px',
+        marginTop: '20px',
+        marginBottom: '20px'
+    },
+
+    tab: {
+        background: 'none',
+        border: 'none',
+        color: '#5c4033',
+        fontSize: '18px',
+        cursor: 'pointer'
+    },
+
+    activeTab: {
+        background: 'none',
+        border: 'none',
+        color: '#5c4033',
+        fontSize: '18px',
+        cursor: 'pointer',
+        borderBottom: '3px solid #8b5e3c',
+        fontWeight: 'bold'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        cursor: 'pointer',
+        marginRight: '10px'
+    }
+};
+
 
 export default ProfilePage;    

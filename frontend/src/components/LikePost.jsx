@@ -34,10 +34,39 @@ const LikePost = ({ post }) => {
     };
 
     return (
-        <button onClick={handleLike}>
+        <button
+            style={
+                liked
+                    ? styles.likedButton
+                    : styles.button
+            }
+            onClick={handleLike}
+        >
             {liked ? '❤️' : '🤍'} {likes}
         </button>
     );
+};
+
+const styles = {
+    button: {
+        backgroundColor: '#fffaf2',
+        border: '1px solid #d6c4b2',
+        borderRadius: '25px',
+        padding: '8px 14px',
+        cursor: 'pointer',
+        color: '#5c4033',
+        fontWeight: 'bold'
+    },
+
+    likedButton: {
+        backgroundColor: '#ffe8ec',
+        border: '1px solid #ffb3c1',
+        borderRadius: '25px',
+        padding: '8px 14px',
+        cursor: 'pointer',
+        color: '#b23a48',
+        fontWeight: 'bold'
+    }
 };
 
 export default LikePost;

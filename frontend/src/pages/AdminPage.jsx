@@ -12,6 +12,20 @@ const AdminPage = () => {
     const [editingPost, setEditingPost] = useState(null);
     const [editedCaption, setEditedCaption] = useState('');
 
+    const currentUser = JSON.parse(
+    localStorage.getItem('currentUser')
+    );
+
+    if (!currentUser) {
+        window.location.href = '/';
+        return null;
+    }
+
+    if (currentUser?.role !== 'admin') {
+        window.location.href = '/home';
+        return null;
+    }
+
     useEffect(() => {
         fetch('http://localhost:3000/api/users')
             .then(response => response.json())
@@ -171,178 +185,203 @@ const AdminPage = () => {
 
 
     return (
-        <div>
+        <div style={styles.page}>
             <Navigation />
 
-            <h1>Admin Panel</h1>
+            <div style={styles.container}>
 
-            <h2>Manage Report Reasons</h2>
+                <h1>Admin Panel</h1>
 
-            <input
-                value={newReason}
-                onChange={(e) =>
-                    setNewReason(e.target.value)
-                }
-                placeholder="Copyright Violation"
-            />
+                <div style={styles.section}>
+                    <h2>Manage Report Reasons</h2>
 
-            <button onClick={handleAddReason}>
-                Add Reason
-            </button>
-
-            <h2>Users</h2>
-
-            {users.map(user => (
-                <div key={user._id}>
-
-                    <strong>{user.username}</strong>
-                    {' '}
-                    ({user.role})
-
-                    <button
-                        onClick={() =>
-                            handleDeleteUser(user._id)
+                    <input
+                        value={newReason}
+                        style={styles.input}
+                        onChange={(e) =>
+                            setNewReason(e.target.value)
                         }
-                    >
-                        Delete
-                    </button>
+                        placeholder="Copyright Violation"
+                    />
 
                     <button
-                        onClick={() => {
-                            setEditingUser(user._id);
-                            setEditedUsername(user.username);
-                        }}
+                        onClick={handleAddReason}
+                        style={styles.button}
                     >
-                        Edit
+                        Add Reason
                     </button>
+                </div>
 
-                    {editingUser === user._id && (
-                        <div>
+                <div style={styles.section}>
+                    <h2>Users</h2>
 
-                            <input
-                                value={editedUsername}
-                                onChange={(e) =>
-                                    setEditedUsername(
-                                        e.target.value
-                                    )
-                                }
-                            />
+                    {users.map(user => (
+                        <div key={user._id}>
+                            <strong>
+                                {user.username}
+                            </strong>{' '}
+                            ({user.role})
 
                             <button
+                                style={styles.deleteButton}
                                 onClick={() =>
-                                    handleEditUser(
+                                    handleDeleteUser(
                                         user._id
                                     )
                                 }
                             >
-                                Save
+                                Delete
                             </button>
 
+                            <button
+                                style={styles.button}
+                                onClick={() => {
+                                    setEditingUser(
+                                        user._id
+                                    );
+                                    setEditedUsername(
+                                        user.username
+                                    );
+                                }}
+                            >
+                                Edit
+                            </button>
                         </div>
-                    )}
-
+                    ))}
                 </div>
-            ))}
 
-            <h2>Posts</h2>
+                <div style={styles.section}>
+                    <h2>Posts</h2>
 
-{posts.map(post => (
-    <div key={post._id}>
+                    {posts.map(post => (
+                        <div key={post._id}>
+                            <strong>
+                                {post.username}
+                            </strong>{' '}
+                            - {post.caption}
 
-        <strong>
-            {post.username}
-        </strong>
+                            <button
+                                style={styles.deleteButton}
+                                onClick={() =>
+                                    handleDeletePost(
+                                        post._id
+                                    )
+                                }
+                            >
+                                Delete
+                            </button>
 
-        {' - '}
+                            <button
+                                style={styles.button}
+                                onClick={() => {
+                                    setEditingPost(
+                                        post._id
+                                    );
+                                    setEditedCaption(
+                                        post.caption
+                                    );
+                                }}
+                            >
+                                Edit
+                            </button>
+                        </div>
+                    ))}
+                </div>
 
-        {post.caption}
+                <div style={styles.section}>
+                    <h2>Reported Posts</h2>
 
-        <button
-            onClick={() =>
-                handleDeletePost(post._id)
-            }
-        >
-            Delete
-        </button>
+                    {reportedPosts.map(post => (
+                        <div key={post._id}>
+                            <strong>
+                                {post.username}
+                            </strong>{' '}
+                            - {post.caption}
 
-        <button
-            onClick={() => {
-                setEditingPost(post._id);
-                setEditedCaption(post.caption);
-            }}
-        >
-            Edit
-        </button>
+                            <br />
 
-        {editingPost === post._id && (
-            <div>
+                            Reason: {post.reportReason}
 
-                <input
-                    value={editedCaption}
-                    onChange={(e) =>
-                        setEditedCaption(
-                            e.target.value
-                        )
-                    }
-                />
+                            <br />
 
-                <button
-                    onClick={() =>
-                        handleEditPost(post._id)
-                    }
-                >
-                    Save
-                </button>
+                            <button
+                                style={styles.deleteButton}
+                                onClick={() =>
+                                    handleDeletePost(
+                                        post._id
+                                    )
+                                }
+                            >
+                                Delete Post
+                            </button>
+
+                            <button
+                                style={styles.button}
+                                onClick={() =>
+                                    handleDismissReport(
+                                        post._id
+                                    )
+                                }
+                            >
+                                Dismiss Report
+                            </button>
+                        </div>
+                    ))}
+                </div>
 
             </div>
-        )}
-
-    </div>
-))}
-
-            <h2>Reported Posts</h2>
-
-                {reportedPosts.map(post => (
-                    <div key={post._id}>
-
-                        <strong>
-                            {post.username}
-                        </strong>
-
-                        {' - '}
-
-                        {post.caption}
-
-                        <br />
-
-                        Reason:
-
-                        {' '}
-
-                        {post.reportReason}
-
-                        <br />
-
-                        <button
-                            onClick={() =>
-                                handleDeletePost(post._id)
-                            }
-                        >
-                            Delete Post
-                        </button>
-
-                        <button
-                            onClick={() =>
-                                handleDismissReport(post._id)
-                            }
-                        >
-                            Dismiss Report
-                        </button>
-
-                    </div>
-                ))}
         </div>
     );
+};
+
+const styles = {
+    page: {
+        backgroundColor: '#f5efe6',
+        minHeight: '100vh',
+        padding: '20px'
+    },
+
+    container: {
+        maxWidth: '1200px',
+        margin: '0 auto'
+    },
+
+    section: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        marginBottom: '20px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        textAlign: 'left'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2',
+        marginBottom: '10px'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '8px 14px',
+        marginRight: '8px',
+        cursor: 'pointer'
+    },
+
+    deleteButton: {
+        backgroundColor: '#b23a48',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '8px 14px',
+        marginRight: '8px',
+        cursor: 'pointer'
+    }
 };
 
 export default AdminPage;

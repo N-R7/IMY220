@@ -20,10 +20,14 @@ const Profile = ({ user }) => {
 
 const styles = {
   profile: {
-    display: 'flex',
-    gap: '30px',
-    padding: '20px',
-    alignItems: 'center'
+      display: 'flex',
+      gap: '30px',
+      padding: '30px',
+      alignItems: 'center',
+      backgroundColor: '#fffaf2',
+      borderRadius: '20px',
+      boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+      marginBottom: '20px'
   },
   avatar: {
     width: '80px',
@@ -35,12 +39,12 @@ const styles = {
     flex: 1
   },
   username: {
-    margin: 0,
-    fontSize: '24px'
+      fontSize: '28px',
+      color: '#5c4033',
+      marginBottom: '10px'
   },
   bio: {
-    color: '#666',
-    margin: '4px 0'
+      color: '#6d5d4f'
   },
   stats: {
     display: 'flex',

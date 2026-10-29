@@ -94,7 +94,7 @@ const CreatePost = ({ posts, setPosts }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} style={styles.card} >
       <h3>Create Post</h3>
       <div>
         <label>Image:</label>
@@ -102,6 +102,7 @@ const CreatePost = ({ posts, setPosts }) => {
           type="file" 
           accept="image/*"
           onChange={(e) => setImage(e.target.files[0])}
+          style={styles.input}
         />
       </div>
       <div>
@@ -121,11 +122,40 @@ const CreatePost = ({ posts, setPosts }) => {
               value={hashtags}
               onChange={(e) => setHashtags(e.target.value)}
               placeholder="travel, beach, photography"
+              style={styles.input}
           />
       </div>
-      <button type="submit">Share Post</button>
+      <button type="submit" style={styles.input}>Share Post</button>
     </form>
   );
+};
+
+const styles = {
+    card: {
+        backgroundColor: '#fffaf2',
+        padding: '20px',
+        borderRadius: '18px',
+        boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
+        marginBottom: '25px'
+    },
+
+    input: {
+        width: '100%',
+        padding: '10px',
+        marginTop: '5px',
+        marginBottom: '15px',
+        borderRadius: '10px',
+        border: '1px solid #d6c4b2'
+    },
+
+    button: {
+        backgroundColor: '#8b5e3c',
+        color: 'white',
+        border: 'none',
+        padding: '10px 16px',
+        borderRadius: '10px',
+        cursor: 'pointer'
+    }
 };
 
 export default CreatePost;

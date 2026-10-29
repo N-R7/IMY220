@@ -9,6 +9,15 @@ import { useEffect, useState } from 'react';
 const AlbumPage = () => {
     const { id } = useParams();
 
+    const currentUser = JSON.parse(
+        localStorage.getItem('currentUser')
+    );
+
+    if (!currentUser) {
+        window.location.href = '/';
+        return null;
+    }
+
     const [album, setAlbum] = useState(null);
     const [posts, setPosts] = useState([]);
     const [selectedPost, setSelectedPost] = useState('');
@@ -42,10 +51,6 @@ const AlbumPage = () => {
             </div>
         );
     }
-
-    const currentUser = JSON.parse(
-        localStorage.getItem('currentUser')
-    );
 
     const isOwner =
         currentUser?.username === album.owner;
@@ -103,7 +108,10 @@ const AlbumPage = () => {
     };
 
     return (
-        <div>
+        <div style={{
+            backgroundColor: '#f5efe6',
+            minHeight: '100vh'
+        }}>
             <Navigation />
 
             <h1>{album.name}</h1>
@@ -179,9 +187,15 @@ const AlbumPage = () => {
                     </button>
 
                     {showPostSelector && (
-                        <div>
+                        <div
+                            style={{
+                                maxWidth: '900px',
+                                margin: '0 auto',
+                                padding: '20px'
+                            }}
+                        >
 
-                            <select
+                          <select
                                 value={selectedPost}
                                 onChange={(e) =>
                                     setSelectedPost(
