@@ -12,7 +12,7 @@ const DeleteAlbum = ({ album }) => {
 
             alert('Album deleted!');
 
-            window.location.href = '/profile';
+            window.location.href = '/home';
 
         } catch (error) {
             console.error(error);
@@ -20,20 +20,25 @@ const DeleteAlbum = ({ album }) => {
     };
 
     return (
-       <button
+        <button
+            style={styles.button}
             onClick={handleDelete}
-            style={{
-                backgroundColor: '#b23a48',
-                color: 'white',
-                border: 'none',
-                borderRadius: '10px',
-                padding: '10px 16px',
-                cursor: 'pointer'
-            }}
         >
             Delete Album
         </button>
     );
+};
+
+const styles = {
+    button: {
+        backgroundColor: '#b23a48',
+        color: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '10px 16px',
+        cursor: 'pointer',
+        marginRight: '10px'
+    }
 };
 
 export default DeleteAlbum;

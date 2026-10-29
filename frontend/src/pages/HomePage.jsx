@@ -15,6 +15,15 @@ const HomePage = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
+  const currentUser = JSON.parse(
+    localStorage.getItem('currentUser')
+    );
+
+    if (!currentUser) {
+        window.location.href = '/';
+        return null;
+    }
+
   useEffect(() => {
       fetch('http://localhost:3000/api/posts')
           .then(response => response.json())
@@ -31,15 +40,6 @@ const HomePage = () => {
 
         setSearchTerm(tag || '');
     }, [location]);
-
-  const currentUser = JSON.parse(
-        localStorage.getItem('currentUser')
-    );
-
-    if (!currentUser) {
-        window.location.href = '/';
-        return null;
-    }
 
   const displayedPosts = posts
       .filter(post => {
