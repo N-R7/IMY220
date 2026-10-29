@@ -17,9 +17,17 @@ const Post = ({ post }) => {
         </span>
       </div>
       
-      <div style={styles.imagePlaceholder}>
-        IMAGE HERE
-      </div>
+      {post.image && post.image.startsWith('/uploads/') ? (
+          <img
+              src={`http://localhost:3000${post.image}`}
+              alt="Post"
+              style={styles.image}
+          />
+      ) : (
+          <div style={styles.imagePlaceholder}>
+              No Image Available
+          </div>
+      )}
       
       <div style={styles.content}>
         <p style={styles.caption}>{post.caption}</p>
@@ -85,6 +93,11 @@ const styles = {
     gap: '20px',
     color: '#666',
     fontSize: '14px'
+  },
+  image: {
+      width: '100%',
+      height: '200px',
+      objectFit: 'cover'
   }
 };
 

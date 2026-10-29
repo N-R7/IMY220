@@ -17,29 +17,47 @@ const CreatePost = ({ posts, setPosts }) => {
         localStorage.getItem('currentUser')
     );
 
-    const newPost = {
-        userId: currentUser?.id,
-        username: currentUser?.username,
-        image: image ? image.name : 'placeholder.jpg',
-        caption,
-        hashtags: hashtags
-            .split(',')
-            .map(tag => tag.trim())
-            .filter(tag => tag !== ''),
-        likes: 0,
-        comments: []
-    };
+    const formData = new FormData();
+
+    formData.append(
+        'userId',
+        currentUser?.id
+    );
+
+    formData.append(
+        'username',
+        currentUser?.username
+    );
+
+    formData.append(
+        'caption',
+        caption
+    );
+
+    formData.append(
+        'hashtags',
+        JSON.stringify(
+            hashtags
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag !== '')
+        )
+    );
+
+    if (image) {
+        formData.append(
+            'image',
+            image
+        );
+    }
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/posts",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(newPost)
-        }
+          'http://localhost:3000/api/posts',
+          {
+              method: 'POST',
+              body: formData
+          }
       );
 
       const data = await response.json();

@@ -207,11 +207,21 @@ app.get('/api/albums', async (req, res) => {
     }
 });
 
-app.post('/api/posts', async (req, res) => {
+app.post('/api/posts', upload.single('image'), async (req, res) => {
     try {
         const db = getDB();
 
-        const newPost = req.body;
+        const newPost = {
+            userId: req.body.userId,
+            username: req.body.username,
+            caption: req.body.caption,
+            hashtags: JSON.parse(req.body.hashtags),
+            likes: 0,
+            comments: [],
+            image: req.file
+                ? `/uploads/${req.file.filename}`
+                : null
+        };
 
         const result = await db
             .collection('posts')
