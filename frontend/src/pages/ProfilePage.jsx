@@ -15,6 +15,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [albums, setAlbums] = useState([]);
+  const [friendRequests, setFriendRequests] = useState([]);
 
   const currentUser = JSON.parse(
         localStorage.getItem('currentUser')
@@ -22,14 +23,6 @@ const ProfilePage = () => {
 
   const isOwnProfile =
         currentUser?.id === id;
-
-  const userPosts = posts.filter(
-        post => post.userId === user._id
-    );
-
-  const userAlbums = albums.filter(
-        album => album.owner === user.username
-    );
 
   useEffect(() => {
       fetch('http://localhost:3000/api/users')
@@ -40,6 +33,11 @@ const ProfilePage = () => {
               );
 
               setUser(foundUser);
+
+              setFriendRequests(
+                foundUser?.friendRequests || []
+              );
+
           })
           .catch(error => console.error(error));
 
@@ -70,22 +68,30 @@ const ProfilePage = () => {
       );
   }
 
+  const userPosts = posts.filter(
+        post => post.userId === user._id
+    );
+
+  const userAlbums = albums.filter(
+        album => album.owner === user.username
+    );
+
   const handleAddFriend = async () => {
       try {
           await fetch(
-              `http://localhost:3000/api/users/${user._id}/friend`,
+              `http://localhost:3000/api/users/${user._id}/request`,
               {
                   method: 'PUT',
                   headers: {
                       'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                      friend: 'bob'
-                  })
+                    username: currentUser?.username
+                })
               }
           );
 
-          alert('Friend added!');
+          alert('Friend request sent!');
           window.location.reload();
 
       } catch (error) {
@@ -103,8 +109,8 @@ const ProfilePage = () => {
                       'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({
-                      friend: 'bob'
-                  })
+                    friend: currentUser?.username
+                })
               }
           );
 
@@ -115,6 +121,30 @@ const ProfilePage = () => {
           console.error(error);
       }
   };
+
+  const handleAcceptRequest = async (username) => {
+    try {
+
+        await fetch(
+            `http://localhost:3000/api/users/${user._id}/accept-request`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username
+                })
+            }
+        );
+
+        alert('Friend request accepted!');
+        window.location.reload();
+
+    } catch (error) {
+        console.error(error);
+    }
+};
 
   return (
     <div>
@@ -129,6 +159,20 @@ const ProfilePage = () => {
         
         <section>
           <FriendsList friends={user?.friends || []} />
+          <h3>Friend Requests</h3>
+            {friendRequests.map((request, index) => (
+                <div key={index}>
+                    {request}
+
+                    <button
+                        onClick={() =>
+                            handleAcceptRequest(request)
+                        }
+                    >
+                        Accept
+                    </button>
+                </div>
+            ))}
         </section>
         {!isOwnProfile && (
             <>

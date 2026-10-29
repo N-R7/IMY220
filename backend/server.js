@@ -357,22 +357,40 @@ app.put('/api/users/:id/unfriend', async (req, res) => {
     try {
         const db = getDB();
 
-        const result = await db
+        const currentUser = await db
             .collection('users')
-            .updateOne(
-                {
-                    _id: new ObjectId(req.params.id)
-                },
-                {
-                    $pull: {
-                        friends: req.body.friend
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('users').updateOne(
+            {
+                _id: new ObjectId(req.params.id)
+            },
+            {
+                $pull: {
+                    friends: {
+                        username: req.body.friend
                     }
                 }
-            );
+            }
+        );
+
+        await db.collection('users').updateOne(
+            {
+                username: req.body.friend
+            },
+            {
+                $pull: {
+                    friends: {
+                        username: currentUser.username
+                    }
+                }
+            }
+        );
 
         res.json({
-            success: true,
-            modifiedCount: result.modifiedCount
+            success: true
         });
 
     } catch (err) {
@@ -456,7 +474,7 @@ app.put('/api/users/:id/request', async (req, res) => {
                 },
                 {
                     $addToSet: {
-                        friendRequests: req.body.fromUser
+                        friendRequests: req.body.username
                     }
                 }
             );
@@ -464,6 +482,65 @@ app.put('/api/users/:id/request', async (req, res) => {
         res.json({
             success: true,
             modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+app.put('/api/users/:id/accept-request', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const acceptedUser = await db
+            .collection('users')
+            .findOne({
+                username: req.body.username
+            });
+
+        const currentUser = await db
+            .collection('users')
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('users').updateOne(
+            {
+                _id: new ObjectId(req.params.id)
+            },
+            {
+                $pull: {
+                    friendRequests: req.body.username
+                },
+                $addToSet: {
+                    friends: {
+                        id: acceptedUser._id.toString(),
+                        username: acceptedUser.username
+                    }
+                }
+            }
+        );
+
+        await db.collection('users').updateOne(
+            {
+                username: req.body.username
+            },
+            {
+                $addToSet: {
+                    friends: {
+                        id: currentUser._id.toString(),
+                        username: currentUser.username
+                    }
+                }
+            }
+        );
+
+        res.json({
+            success: true
         });
 
     } catch (err) {
