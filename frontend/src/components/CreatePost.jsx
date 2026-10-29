@@ -6,6 +6,10 @@ const CreatePost = ({ posts, setPosts }) => {
   const [hashtags, setHashtags] = useState('');
 
   const handleSubmit = async (e) => {
+    if (!caption.trim()) {
+        alert('Caption is required');
+        return;
+    }
     e.preventDefault();
 
     const currentUser =
@@ -14,6 +18,7 @@ const CreatePost = ({ posts, setPosts }) => {
     );
 
     const newPost = {
+        userId: currentUser?.id,
         username: currentUser?.username,
         image: image ? image.name : 'placeholder.jpg',
         caption,

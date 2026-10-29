@@ -444,6 +444,36 @@ app.put('/api/posts/:id/report', async (req, res) => {
     }
 });
 
+app.put('/api/users/:id/request', async (req, res) => {
+    try {
+        const db = getDB();
+
+        const result = await db
+            .collection('users')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $addToSet: {
+                        friendRequests: req.body.fromUser
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

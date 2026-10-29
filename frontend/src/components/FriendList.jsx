@@ -8,6 +8,7 @@ const FriendsList = ({ friends }) => {
             {friends.map((friend, index) => (
 
                 <div key={index}>
+                    {friend}
 
                     {friend === 'nina' && (
                         <Link to="/profile/6abecac2118f4eb6318af9b2">

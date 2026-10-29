@@ -48,7 +48,12 @@ const PostPreview = ({post, posts, setPosts}) => {
     <article style={styles.card}>
       <div style={styles.header}>
         <div style={styles.avatarPlaceholder}>👤</div>
-        <span style={styles.username}>{post.username}</span>
+        <Link
+            to={post.userId ? `/profile/${post.userId}`: '#'}
+            style={styles.link}
+        >
+            {post.username}
+        </Link>
         <span style={styles.timestamp}>
           {post.timestamp
           ? new Date(post.timestamp).toLocaleDateString()

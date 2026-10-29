@@ -16,6 +16,21 @@ const ProfilePage = () => {
   const [posts, setPosts] = useState([]);
   const [albums, setAlbums] = useState([]);
 
+  const currentUser = JSON.parse(
+        localStorage.getItem('currentUser')
+    );
+
+  const isOwnProfile =
+        currentUser?.id === id;
+
+  const userPosts = posts.filter(
+        post => post.userId === user._id
+    );
+
+  const userAlbums = albums.filter(
+        album => album.owner === user.username
+    );
+
   useEffect(() => {
       fetch('http://localhost:3000/api/users')
           .then(response => response.json())
@@ -107,31 +122,45 @@ const ProfilePage = () => {
       <main>
         <section>
           <Profile user={user} />
-          <EditProfile user={user} />
+            {isOwnProfile && (
+                <EditProfile user={user} />
+            )}
         </section>
         
         <section>
           <FriendsList friends={user?.friends || []} />
         </section>
-        <button onClick={handleAddFriend}>
-          Add Friend
-        </button>
-        <button onClick={handleUnfriend}>
-            Unfriend
-        </button>
+        {!isOwnProfile && (
+            <>
+                <button onClick={handleAddFriend}>
+                    Add Friend
+                </button>
+
+                <button onClick={handleUnfriend}>
+                    Unfriend
+                </button>
+            </>
+        )}
         
         <section>
           <h3>My Posts</h3>
-          <CreatePost />
-          {posts.map(post => (
+          {isOwnProfile && (
+                <CreatePost
+                    posts={posts}
+                    setPosts={setPosts}
+                />
+            )}
+          {userPosts.map(post => (
               <PostPreview key={post._id} post={post} />
           ))}
         </section>
 
         <section>
           <h3>Albums</h3>
-          <CreateAlbum />
-          {albums.map(album => (
+          {isOwnProfile && (
+                <CreateAlbum />
+            )}
+          {userAlbums.map(album => (
               <AlbumPreview
                   key={album._id}
                   album={album}
