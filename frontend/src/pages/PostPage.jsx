@@ -3,12 +3,14 @@ import Navigation from '../components/Navigation';
 import Post from '../components/Post';
 import Comments from '../components/Comments';
 import EditPost from '../components/EditPost';
+import ReportPost from '../components/ReportPost';
 
 import { useState, useEffect } from 'react';
 
 const PostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   useEffect(() => {
       fetch('http://localhost:3000/api/posts')
@@ -32,6 +34,27 @@ const PostPage = () => {
     );
   }
 
+  const isOwner =
+    currentUser?.id === post.userId;
+
+  const handleDelete = async () => {
+      try {
+
+          await fetch(
+              `http://localhost:3000/api/posts/${post._id}`,
+              {
+                  method: 'DELETE'
+              }
+          );
+
+          alert('Post deleted!');
+          window.location.href = '/home';
+
+      } catch (error) {
+          console.error(error);
+      }
+  };
+
   return (
     <div>
       <Navigation />
@@ -39,7 +62,18 @@ const PostPage = () => {
         <Post post={post} />
         <Comments comments={post.comments} 
           postId={post._id}/>
-        <EditPost post={post} />
+        {!isOwner && (
+            <ReportPost postId={post._id} />
+        )}
+          {isOwner && (
+            <>
+                <EditPost post={post} />
+
+                <button onClick={handleDelete}>
+                    Delete Post
+                </button>
+            </>
+        )}
       </main>
     </div>
   );

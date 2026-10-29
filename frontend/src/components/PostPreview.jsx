@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import ReportPost from './ReportPost';
 
 const PostPreview = ({post, posts, setPosts}) => {
   const handleDelete = async (id) => {
@@ -18,31 +18,12 @@ const PostPreview = ({post, posts, setPosts}) => {
       }
   };
 
-  const [reportReason, setReportReason] = useState('');
-  const [reported, setReported] = useState(post.reported || false);
+  const currentUser = JSON.parse(
+      localStorage.getItem('currentUser')
+  );
 
-  const handleReport = async (id) => {
-      try {
-          await fetch(
-              `http://localhost:3000/api/posts/${id}/report`,
-              {
-                  method: 'PUT',
-                  headers: {
-                      'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                      reason: reportReason
-                  })
-              }
-          );
-
-          alert('Post reported!');
-          setReported(true);
-
-      } catch (error) {
-          console.error(error);
-      }
-  };
+  const isOwner =
+      currentUser?.id === post.userId;
 
   return (
     <article style={styles.card}>
@@ -80,38 +61,14 @@ const PostPreview = ({post, posts, setPosts}) => {
           <span>{post.likes} likes</span>
           <span>{post.comments?.length || 0} comments</span>
         </div>
-        <button onClick={() => handleDelete(post._id)}>
-          Delete
-        </button>
-        <select
-          value={reportReason}
-          onChange={(e) => setReportReason(e.target.value)}
-      >
-          <option value="">
-              Select reason
-          </option>
-
-          <option value="Spam">
-              Spam
-          </option>
-
-          <option value="Inappropriate Content">
-              Inappropriate Content
-          </option>
-
-          <option value="Harassment">
-              Harassment
-          </option>
-
-          <option value="Other">
-              Other
-          </option>
-      </select>
-        <button disabled={reported}
-                onClick={() => handleReport(post._id)} 
-        >
-            {reported ? 'Reported' : 'Report'}
-        </button>
+        {isOwner && (
+            <button onClick={() => handleDelete(post._id)}>
+                Delete
+            </button>
+        )}
+        {!isOwner && (
+            <ReportPost postId={post._id} />
+        )}
       </div>
     </article>
   );

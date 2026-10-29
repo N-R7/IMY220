@@ -213,7 +213,8 @@ app.put('/api/posts/:id', async (req, res) => {
                 { _id: new ObjectId(req.params.id) },
                 {
                     $set: {
-                        caption: req.body.caption
+                        caption: req.body.caption,
+                        hashtags: req.body.hashtags
                     }
                 }
             );
