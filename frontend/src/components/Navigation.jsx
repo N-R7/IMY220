@@ -4,6 +4,10 @@ const Navigation = () => {
   const currentUser = JSON.parse(
       localStorage.getItem('currentUser')
   );
+
+  const isAdmin =
+    currentUser?.role === 'admin';
+
   return (
     <nav style={styles.nav}>
       <div style={styles.logo}>
@@ -17,6 +21,14 @@ const Navigation = () => {
         >
             Profile
         </Link>
+        {isAdmin && (
+            <Link
+                to="/admin"
+                style={styles.link}
+            >
+                Admin
+            </Link>
+        )}
         <button
           style={styles.logoutBtn}
           onClick={() => { window.location.href = '/'; }}>

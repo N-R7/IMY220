@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import ProfilePage from './pages/ProfilePage'; 
 import PostPage from './pages/PostPage';
 import AlbumPage from './pages/AlbumPage';
+import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/profile/:id" element={<ProfilePage />} />
         <Route path="/post/:id" element={<PostPage />} />
         <Route path="/album/:id" element={<AlbumPage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
   );

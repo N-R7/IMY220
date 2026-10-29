@@ -44,11 +44,13 @@ app.post('/api/signup', async (req, res) => {
     } = req.body;
 
     const newUser = {
-      username,
-      email,
-      password,
-      bio: "",
-      friends: []
+        username,
+        email,
+        password,
+        bio: "",
+        friends: [],
+        friendRequests: [],
+        role: "user"
     };
 
     const result = await db
@@ -92,7 +94,8 @@ app.post('/api/signin', async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        role: user.role
       }
     });
 
@@ -707,6 +710,87 @@ app.put('/api/posts/:id/unlike', async (req, res) => {
 
         res.json({
             success: true
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
+    }
+});
+
+app.get('/api/report-reasons', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const reasons = await db
+            .collection('reportReasons')
+            .find({})
+            .toArray();
+
+        res.json(reasons);
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+});
+
+app.post('/api/report-reasons', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('reportReasons')
+            .insertOne({
+                reason: req.body.reason
+            });
+
+        res.json({
+            success: true,
+            insertedId: result.insertedId
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
+    }
+});
+
+app.put('/api/posts/:id/dismiss-report', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const result = await db
+            .collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        reported: false,
+                        reportReason: ''
+                    }
+                }
+            );
+
+        res.json({
+            success: true,
+            modifiedCount: result.modifiedCount
         });
 
     } catch (err) {

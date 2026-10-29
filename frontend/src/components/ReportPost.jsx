@@ -1,8 +1,19 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const ReportPost = ({ postId }) => {
     const [reportReason, setReportReason] = useState('');
     const [reported, setReported] = useState(false);
+    const [reasons, setReasons] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/report-reasons')
+            .then(response => response.json())
+            .then(data => {
+                setReasons(data);
+            })
+            .catch(error => console.error(error));
+    }, []);
 
     const handleReport = async () => {
         try {
@@ -35,25 +46,14 @@ const ReportPost = ({ postId }) => {
                     setReportReason(e.target.value)
                 }
             >
-                <option value="">
-                    Select reason
-                </option>
-
-                <option value="Spam">
-                    Spam
-                </option>
-
-                <option value="Inappropriate Content">
-                    Inappropriate Content
-                </option>
-
-                <option value="Harassment">
-                    Harassment
-                </option>
-
-                <option value="Other">
-                    Other
-                </option>
+                {reasons.map(reason => (
+                    <option
+                        key={reason._id}
+                        value={reason.reason}
+                    >
+                        {reason.reason}
+                    </option>
+                ))}
             </select>
 
             <button
