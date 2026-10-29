@@ -4,12 +4,16 @@ import CreatePost from '../components/CreatePost';
 import SearchInput from '../components/SearchInput';
 
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const [feedType, setFeedType] = useState('global');
-  const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState('latest');
+
+  const location = useLocation();
+
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
       fetch('http://localhost:3000/api/posts')
@@ -17,6 +21,17 @@ const HomePage = () => {
           .then(data => setPosts(data))
           .catch(error => console.error(error));
   }, []);
+
+  useEffect(() => {
+        const params = new URLSearchParams(
+            location.search
+        );
+
+        const tag = params.get('search');
+
+        setSearchTerm(tag || '');
+    }, [location]);
+
 
   const currentUser = JSON.parse(
       localStorage.getItem('currentUser')

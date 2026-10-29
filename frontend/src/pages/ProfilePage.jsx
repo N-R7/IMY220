@@ -25,6 +25,12 @@ const ProfilePage = () => {
   const isOwnProfile =
         currentUser?.id === id;
 
+  const isFriend =
+    user?.friends?.some(
+        friend =>
+            friend.username === currentUser?.username
+    );
+
   useEffect(() => {
       fetch('http://localhost:3000/api/users')
           .then(response => response.json())
@@ -159,21 +165,40 @@ const ProfilePage = () => {
         </section>
         
         <section>
-          <FriendsList friends={user?.friends || []} />
-          <h3>Friend Requests</h3>
-            {friendRequests.map((request, index) => (
-                <div key={index}>
-                    {request}
+            {!isOwnProfile && (
+                <p>
+                    Friend Status:{' '}
 
-                    <button
-                        onClick={() =>
-                            handleAcceptRequest(request)
-                        }
-                    >
-                        Accept
-                    </button>
-                </div>
-            ))}
+                    {isFriend
+                        ? 'Friends'
+                        : friendRequests.includes(
+                            currentUser?.username
+                        )
+                        ? 'Friend Request Pending'
+                        : 'Not Friends'}
+                </p>
+            )}
+          {(isOwnProfile || isFriend) ? (<FriendsList friends={user?.friends || []} />)
+           : (<p>Friends list is private.</p>)}
+          {isOwnProfile && (
+                <>
+                    <h3>Friend Requests</h3>
+
+                    {friendRequests.map((request, index) => (
+                        <div key={index}>
+                            {request}
+
+                            <button
+                                onClick={() =>
+                                    handleAcceptRequest(request)
+                                }
+                            >
+                                Accept
+                            </button>
+                        </div>
+                    ))}
+                </>
+            )}
         </section>
         {!isOwnProfile && (
             <>

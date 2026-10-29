@@ -64,12 +64,24 @@ const CreatePost = ({ posts, setPosts }) => {
 
       console.log("Post created:", data);
 
+      const createdPost = {
+          _id: data.insertedId,
+          userId: currentUser?.id,
+          username: currentUser?.username,
+          caption,
+          hashtags: hashtags
+              .split(',')
+              .map(tag => tag.trim())
+              .filter(tag => tag !== ''),
+          likes: 0,
+          comments: [],
+          timestamp: new Date(),
+          image: data.image || null
+      };
+
       setPosts([
-          ...posts,
-          {
-              ...newPost,
-              _id: data.insertedId
-          }
+          createdPost,
+          ...posts
       ]);
 
       setCaption("");

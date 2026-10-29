@@ -2,7 +2,9 @@ import { Link } from 'react-router-dom';
 import ReportPost from './ReportPost';
 import LikePost from './LikePost';
 
+
 const PostPreview = ({post, posts, setPosts}) => {
+
   const handleDelete = async (id) => {
       try {
           await fetch(
@@ -61,15 +63,32 @@ const PostPreview = ({post, posts, setPosts}) => {
         <p style={styles.caption}>{post.caption}</p>
         <p>
             {post.hashtags?.map(tag => (
-                <span key={tag}>
-                    #{tag}{' '}
-                </span>
-            ))}
+              <Link
+                  key={tag}
+                  to={`/home?search=${tag}`}
+                  style={{
+                      marginRight: '6px',
+                      color: 'blue',
+                      textDecoration: 'none'
+                  }}
+              >
+                  #{tag}
+              </Link>
+          ))}
         </p>
         <div style={styles.stats}>
           <LikePost post={post} />
           <span>{post.comments?.length || 0} comments</span>
         </div>
+        {post.comments ?.slice(0, 2)
+            .map((comment, index) => (
+                <div key={index}>
+                    <strong>
+                        {comment.username}
+                    </strong>
+                    : {comment.text}
+                </div>
+        ))}
         {isOwner && (
             <button onClick={() => handleDelete(post._id)}>
                 Delete

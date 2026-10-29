@@ -222,6 +222,7 @@ app.post('/api/posts', upload.single('image'), async (req, res) => {
             likes: 0,
             comments: [],
             timestamp: new Date(),
+            reportCount: 0,
             image: req.file
                 ? `/uploads/${req.file.filename}`
                 : null
@@ -480,6 +481,9 @@ app.put('/api/posts/:id/report', async (req, res) => {
                     _id: new ObjectId(req.params.id)
                 },
                 {
+                    $inc: {
+                        reportCount: 1
+                    },
                     $set: {
                         reported: true,
                         reportReason: req.body.reason
@@ -784,7 +788,8 @@ app.put('/api/posts/:id/dismiss-report', async (req, res) => {
                 {
                     $set: {
                         reported: false,
-                        reportReason: ''
+                        reportReason: '',
+                        reportCount: 0
                     }
                 }
             );

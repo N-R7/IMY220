@@ -1,7 +1,10 @@
 const Profile = ({ user }) => {
   return (
     <div style={styles.profile}>
-      <div style={styles.avatarPlaceholder}>👤</div>
+      <img src={user.profileImage}
+           alt={user.username}
+           style={styles.avatar}
+      />
       <div style={styles.info}>
         <h2 style={styles.username}>{user.username}</h2>
         <p style={styles.bio}>{user.bio}</p>
@@ -22,16 +25,11 @@ const styles = {
     padding: '20px',
     alignItems: 'center'
   },
-  avatarPlaceholder: {
+  avatar: {
     width: '80px',
     height: '80px',
     borderRadius: '50%',
-    backgroundColor: '#e0e0e0',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '30px',
-    color: '#666'
+    objectFit: 'cover'
   },
   info: {
     flex: 1

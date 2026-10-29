@@ -12,7 +12,9 @@ const CreateAlbum = () => {
             name,
             description,
             hashtags: hashtags.split(',').map(tag => tag.trim()),
-            owner: 'nina'
+            owner: JSON.parse(
+                localStorage.getItem('currentUser')
+            )?.username
         };
 
         try {

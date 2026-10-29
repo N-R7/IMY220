@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import PostPreview from '../components/PostPreview';
 import EditAlbum from '../components/EditAlbum';
@@ -112,9 +112,17 @@ const AlbumPage = () => {
 
             <p>
                 {(album.hashtags || []).map(tag => (
-                    <span key={tag}>
-                        #{tag}{' '}
-                    </span>
+                    <Link
+                        key={tag}
+                        to={`/home?search=${tag}`}
+                        style={{
+                            marginRight: '6px',
+                            color: 'blue',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        #{tag}
+                    </Link>
                 ))}
             </p>
 
