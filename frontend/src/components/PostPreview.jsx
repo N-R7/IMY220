@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import ReportPost from './ReportPost';
+import LikePost from './LikePost';
 
 const PostPreview = ({post, posts, setPosts}) => {
   const handleDelete = async (id) => {
@@ -58,7 +59,7 @@ const PostPreview = ({post, posts, setPosts}) => {
             ))}
         </p>
         <div style={styles.stats}>
-          <span>{post.likes} likes</span>
+          <LikePost post={post} />
           <span>{post.comments?.length || 0} comments</span>
         </div>
         {isOwner && (

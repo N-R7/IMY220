@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import LikePost from './LikePost';
 
 const Post = ({ post }) => {
   return (
@@ -30,7 +31,7 @@ const Post = ({ post }) => {
             ))}
         </p>
         <div style={styles.stats}>
-          <span>{post.likes} likes</span>
+          <LikePost post={post} />
         </div>
       </div>
     </article>

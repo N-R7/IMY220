@@ -6,9 +6,32 @@ const { ObjectId } = require('mongodb');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const multer = require('multer');
+const path = require('path');
+
 app.use(cors()); 
 
 app.use(express.json());
+app.use('/uploads', express.static('uploads'));
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+
+    filename: (req, file, cb) => {
+        cb(
+            null,
+            Date.now() +
+            path.extname(file.originalname)
+        );
+    }
+});
+
+const upload = multer({
+    storage
+});
+
 
 app.post('/api/signup', async (req, res) => {
   try {
@@ -613,20 +636,20 @@ app.put('/api/albums/:id/remove-post', async (req, res) => {
     }
 });
 
-app.put('/api/albums/:id/remove-post', async (req, res) => {
+app.put('/api/posts/:id/like', async (req, res) => {
     try {
 
         const db = getDB();
 
         const result = await db
-            .collection('albums')
+            .collection('posts')
             .updateOne(
                 {
                     _id: new ObjectId(req.params.id)
                 },
                 {
-                    $pull: {
-                        posts: req.body.postId
+                    $inc: {
+                        likes: 1
                     }
                 }
             );
@@ -637,10 +660,52 @@ app.put('/api/albums/:id/remove-post', async (req, res) => {
         });
 
     } catch (err) {
+
         res.status(500).json({
             success: false,
             error: err.message
         });
+
+    }
+});
+
+app.put('/api/posts/:id/unlike', async (req, res) => {
+    try {
+
+        const db = getDB();
+
+        const post = await db
+            .collection('posts')
+            .findOne({
+                _id: new ObjectId(req.params.id)
+            });
+
+        await db.collection('posts')
+            .updateOne(
+                {
+                    _id: new ObjectId(req.params.id)
+                },
+                {
+                    $set: {
+                        likes: Math.max(
+                            (post.likes || 0) - 1,
+                            0
+                        )
+                    }
+                }
+            );
+
+        res.json({
+            success: true
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+
     }
 });
 
